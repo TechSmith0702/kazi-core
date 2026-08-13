@@ -24,14 +24,12 @@ const PROCESS_URL = MODE === 'live'
   ? 'https://www.payfast.co.za/eng/process'
   : 'https://sandbox.payfast.co.za/eng/process';
 
-// Source-of-truth catalogue (prices in cents). Keep in sync with js/app.js.
+// Source-of-truth catalogue (prices in cents). Only on-sale products go
+// here. Keep in sync with the buyable items in js/app.js.
+// NOTE: prices are PLACEHOLDER — confirm with the owner before going live.
 const PRODUCTS = {
-  d1: { name: 'All-Purpose Cleaner', price: 4999 },
-  d2: { name: 'Laundry Detergent 2L', price: 8999 },
-  d3: { name: 'Dishwashing Liquid', price: 3499 },
-  p1: { name: 'Home Fragrance Mist', price: 12999 },
-  p2: { name: 'Reed Diffuser', price: 15999 },
-  p3: { name: 'Linen Perfume Spray', price: 9999 }
+  sv: { name: 'Sweet Vanilla', price: 8999 },
+  fl: { name: 'Fresh Linen', price: 8999 }
 };
 const DELIVERY_CENTS = 6000;
 

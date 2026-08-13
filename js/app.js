@@ -7,14 +7,22 @@
 (function () {
   'use strict';
 
-  /* ---------- Data ---------- */
+  /* ---------- Data ----------
+     available:true items are on sale now (need price + image).
+     available:false items show as "Coming soon" (not buyable).
+     NOTE: prices below marked PLACEHOLDER — confirm real prices with
+     the owner before going live. Keep in sync with the server-side
+     catalogue in netlify/functions/payfast-sign.js. */
   const PRODUCTS = [
-    { id: 'd1', name: 'All-Purpose Cleaner', cat: 'Detergent', price: 4999, blurb: 'Everyday multi-surface spray.' },
-    { id: 'd2', name: 'Laundry Detergent 2L', cat: 'Detergent', price: 8999, blurb: 'Concentrated, gentle on fabrics.' },
-    { id: 'd3', name: 'Dishwashing Liquid', cat: 'Detergent', price: 3499, blurb: 'Tough on grease, kind on hands.' },
-    { id: 'p1', name: 'Home Fragrance Mist', cat: 'Perfume', price: 12999, blurb: 'Fresh linen room spray.' },
-    { id: 'p2', name: 'Reed Diffuser', cat: 'Perfume', price: 15999, blurb: 'Slow, all-day scent.' },
-    { id: 'p3', name: 'Linen Perfume Spray', cat: 'Perfume', price: 9999, blurb: 'Spritz sheets & towels.' },
+    // On sale now — real Essentials products
+    { id: 'sv', name: 'Sweet Vanilla', cat: 'Perfume', price: 8999 /* PLACEHOLDER */, blurb: 'Sweet vanilla room & linen mist. 100 ml.', image: 'assets/products/sweet-vanilla.jpg', available: true },
+    { id: 'fl', name: 'Fresh Linen', cat: 'Perfume', price: 8999 /* PLACEHOLDER */, blurb: 'Freshens the air and protects the fabric. 100 ml.', image: 'assets/products/fresh-linen.jpg', available: true },
+    // Coming soon — detergent range (placeholder names, easy to edit)
+    { id: 'd1', name: 'All-Purpose Cleaner', cat: 'Detergent', price: null, blurb: 'Everyday multi-surface spray.', available: false },
+    { id: 'd2', name: 'Laundry Detergent 2L', cat: 'Detergent', price: null, blurb: 'Concentrated, gentle on fabrics.', available: false },
+    { id: 'd3', name: 'Dishwashing Liquid', cat: 'Detergent', price: null, blurb: 'Tough on grease, kind on hands.', available: false },
+    // Coming soon — more fragrances
+    { id: 'p1', name: 'Reed Diffuser', cat: 'Perfume', price: null, blurb: 'Slow, all-day scent.', available: false },
   ];
 
   const DELIVERY_CENTS = 6000; // R60 flat delivery when cart has items
@@ -32,13 +40,24 @@
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
   const money = (cents) => 'R' + (cents / 100).toFixed(2);
   const byId = (id) => PRODUCTS.find((p) => p.id === id);
+  const buyable = (p) => !!(p && p.available && p.price);
   const cartCount = () => Object.values(cart).reduce((n, q) => n + q, 0);
-  const subtotal = () => Object.keys(cart).reduce((s, id) => s + byId(id).price * cart[id], 0);
+  const subtotal = () => Object.keys(cart).reduce((s, id) => {
+    const p = byId(id);
+    return s + (buyable(p) ? p.price * cart[id] : 0);
+  }, 0);
 
   function loadCart() {
     try {
       const raw = localStorage.getItem(CART_KEY);
-      return raw ? JSON.parse(raw) : {};
+      const obj = raw ? JSON.parse(raw) : {};
+      // Drop anything no longer buyable (stale ids, coming-soon items).
+      const clean = {};
+      Object.keys(obj).forEach((id) => {
+        const q = parseInt(obj[id], 10);
+        if (buyable(byId(id)) && q > 0) clean[id] = q;
+      });
+      return clean;
     } catch (e) { return {}; }
   }
   function saveCart() {
@@ -63,6 +82,7 @@
 
   /* ---------- Cart operations ---------- */
   function addToCart(id) {
+    if (!buyable(byId(id))) return; // coming-soon items can't be added
     cart[id] = (cart[id] || 0) + 1;
     saveCart();
     syncCartUI();
@@ -100,40 +120,67 @@
   /* ---------- Rendering: product cards ---------- */
   function productCard(p, addClass) {
     const tagClass = p.cat === 'Detergent' ? 'tag-det' : 'tag-perf';
+    const canBuy = buyable(p);
     const el = document.createElement('div');
-    el.className = 'product';
+    el.className = 'product' + (canBuy ? '' : ' product-soon');
+
+    // Photo: <img> covers the "Product photo" fallback; if the file is
+    // missing, onerror removes the img and the fallback shows through.
+    const media =
+      '<div class="product-media">' +
+        (canBuy ? '' : '<span class="soon-flag">Coming soon</span>') +
+        (p.image ? '<img class="product-img" src="' + p.image + '" alt="' + p.name + '" loading="lazy" onerror="this.remove()">' : '') +
+        '<span class="product-media-ph">Product photo</span>' +
+      '</div>';
+
+    const priceHtml = canBuy
+      ? '<span class="product-price">' + money(p.price) + '</span>'
+      : '<span class="product-price product-price-soon">Coming soon</span>';
+
+    const btnHtml = canBuy
+      ? '<button class="btn-add ' + addClass + '" type="button" data-add="' + p.id + '">Add to cart</button>'
+      : '<button class="btn-add btn-add-soon" type="button" disabled>Coming soon</button>';
+
     el.innerHTML =
-      '<div class="product-media">Product photo</div>' +
+      media +
       '<div class="product-body">' +
         '<span class="product-tag ' + tagClass + '">' + p.cat + '</span>' +
         '<h4 class="product-name">' + p.name + '</h4>' +
         (p.blurb ? '<p class="product-blurb">' + p.blurb + '</p>' : '') +
-        '<span class="product-price">' + money(p.price) + '</span>' +
-        '<button class="btn-add ' + addClass + '" type="button" data-add="' + p.id + '">Add to cart</button>' +
+        priceHtml + btnHtml +
       '</div>';
     return el;
+  }
+
+  // Available products first, coming-soon after.
+  function availableFirst(list) {
+    return list.slice().sort((a, b) => (b.available ? 1 : 0) - (a.available ? 1 : 0));
   }
 
   function renderFeatured() {
     const grid = $('#featuredGrid');
     if (!grid) return;
     grid.innerHTML = '';
-    PRODUCTS.slice(0, 4).forEach((p) => grid.appendChild(productCard(p, 'btn-add-terra')));
+    availableFirst(PRODUCTS).slice(0, 4).forEach((p) => grid.appendChild(productCard(p, 'btn-add-terra')));
   }
 
   /* ---------- Rendering: shop ---------- */
   function renderShop() {
-    let list = PRODUCTS.filter((p) => filters[p.cat]);
-    if (sort === 'low') list = list.slice().sort((a, b) => a.price - b.price);
-    else if (sort === 'high') list = list.slice().sort((a, b) => b.price - a.price);
-    else if (sort === 'az') list = list.slice().sort((a, b) => a.name.localeCompare(b.name));
+    const list = PRODUCTS.filter((p) => filters[p.cat]);
+    // Sort only the buyable items; coming-soon always sit at the end.
+    let avail = list.filter((p) => p.available);
+    const soon = list.filter((p) => !p.available);
+    if (sort === 'low') avail = avail.slice().sort((a, b) => a.price - b.price);
+    else if (sort === 'high') avail = avail.slice().sort((a, b) => b.price - a.price);
+    else if (sort === 'az') avail = avail.slice().sort((a, b) => a.name.localeCompare(b.name));
+    const ordered = avail.concat(soon);
 
     const grid = $('#shopGrid');
     grid.innerHTML = '';
-    list.forEach((p) => grid.appendChild(productCard(p, 'btn-add-green')));
+    ordered.forEach((p) => grid.appendChild(productCard(p, 'btn-add-green')));
 
-    $('#resultCount').textContent = list.length;
-    $('#shopEmpty').hidden = list.length !== 0;
+    $('#resultCount').textContent = ordered.length;
+    $('#shopEmpty').hidden = ordered.length !== 0;
   }
 
   /* ---------- Rendering: drawer ---------- */
