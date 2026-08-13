@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kazi Core Holdings — Cleaning services & home essentials</title>
+  <meta name="description" content="Kazi Core Holdings — Kazi Kleen professional cleaning services and Essentials detergents, perfumes & home fragrances. Proudly South African.">
+
+  <!-- Fonts: Bricolage Grotesque (headings) + Nunito Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" data-nav="home" href="#home">
+        <img src="assets/logo.jpg" alt="Kazi Core lotus logo" class="brand-logo">
+        <span class="brand-text">
+          <span class="brand-name">Kazi Core</span>
+          <span class="brand-sub">Holdings (Pty) Ltd</span>
+        </span>
+      </a>
+      <nav class="main-nav">
+        <a class="nav-link" data-nav="home" href="#home">Home</a>
+        <a class="nav-link" data-nav="services" href="#services">Kazi Kleen</a>
+        <a class="nav-link" data-nav="shop" href="#shop">Essentials Shop</a>
+        <a class="nav-link" data-nav="checkout" href="#checkout">Checkout</a>
+        <button class="cart-btn" id="openCart" type="button" aria-label="Open cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+          Cart
+          <span class="cart-badge" id="cartBadge" hidden>0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ HOME ============ -->
+  <main class="view" id="view-home">
+    <!-- Hero -->
+    <section class="container hero">
+      <div>
+        <span class="eyebrow eyebrow-soft">Kazi Core Holdings (Pty) Ltd</span>
+        <h1 class="hero-title">A fresher home &amp; workplace, from people who care.</h1>
+        <p class="hero-lede">Two divisions, one promise. <strong class="txt-green">Kazi Kleen</strong> handles the cleaning; <strong class="txt-terra">Essentials</strong> stocks the detergents &amp; fragrances to keep it that way.</p>
+        <div class="btn-row">
+          <button class="btn btn-green" data-nav="services" type="button">Book a clean</button>
+          <button class="btn btn-outline-terra" data-nav="shop" type="button">Shop Essentials</button>
+        </div>
+      </div>
+      <div class="media-placeholder media-hero">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#a7b3a2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="m21 15-5-5L5 21"></path></svg>
+        <span class="ph-label">Hero image placeholder</span>
+        <span class="ph-hint">Swap for a bright photo of the team / a spotless space</span>
+      </div>
+    </section>
+
+    <!-- Two divisions -->
+    <section class="container section-pad-sm">
+      <div class="grid grid-2">
+        <div class="card card-green">
+          <span class="badge badge-green">Division 01</span>
+          <h3 class="card-title">Kazi Kleen</h3>
+          <p class="card-text">Professional cleaning for homes and offices — routine, deep and once-off services by a trusted, vetted team.</p>
+          <a class="link-arrow txt-green" data-nav="services" href="#services">Explore services →</a>
+        </div>
+        <div class="card card-terra">
+          <span class="badge badge-terra">Division 02</span>
+          <h3 class="card-title">Essentials</h3>
+          <p class="card-text">Our own line of cleaning detergents and home fragrances &amp; perfumes — buy online and have them delivered.</p>
+          <a class="link-arrow txt-terra" data-nav="shop" href="#shop">Shop the range →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why choose us -->
+    <section class="container section-pad">
+      <span class="eyebrow">About us</span>
+      <h2 class="section-title tight">Why homes &amp; businesses choose Kazi Core</h2>
+      <div class="grid grid-4">
+        <div class="feature">
+          <span class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3f7d5f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6"></path></svg></span>
+          <h4 class="feature-title">Eco-conscious</h4>
+          <p class="feature-text">Low-tox products that are kind to your family, pets and surfaces.</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3f7d5f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+          <h4 class="feature-title">Vetted &amp; trusted</h4>
+          <p class="feature-text">Background-checked, trained staff you can welcome into your space.</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3f7d5f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>
+          <h4 class="feature-title">Flexible booking</h4>
+          <p class="feature-text">Once-off or recurring — schedule around your week, reschedule easily.</p>
+        </div>
+        <div class="feature">
+          <span class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3f7d5f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+          <h4 class="feature-title">Proudly local</h4>
+          <p class="feature-text">A South African small business — serving our community, .co.za and all.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services overview -->
+    <section class="container section-pad">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow txt-green">Kazi Kleen</span>
+          <h2 class="section-title">Services overview</h2>
+        </div>
+        <a class="link-arrow txt-green" data-nav="services" href="#services">View all →</a>
+      </div>
+      <div class="grid grid-4">
+        <div class="tile">
+          <div class="tile-media">Service image</div>
+          <div class="tile-body"><h4 class="tile-title">Home cleaning</h4><p class="tile-text">Regular tidy-ups that keep your home guest-ready.</p></div>
+        </div>
+        <div class="tile">
+          <div class="tile-media">Service image</div>
+          <div class="tile-body"><h4 class="tile-title">Office &amp; commercial</h4><p class="tile-text">Reliable contracts for workspaces and retail.</p></div>
+        </div>
+        <div class="tile">
+          <div class="tile-media">Service image</div>
+          <div class="tile-body"><h4 class="tile-title">Deep clean</h4><p class="tile-text">Top-to-bottom detail for a full reset.</p></div>
+        </div>
+        <div class="tile">
+          <div class="tile-media">Service image</div>
+          <div class="tile-body"><h4 class="tile-title">Move in / move out</h4><p class="tile-text">Hand back the keys spotless, stress-free.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured products -->
+    <section class="band-terra">
+      <div class="container section-pad">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow txt-terra">Essentials</span>
+            <h2 class="section-title">Featured products</h2>
+          </div>
+          <a class="link-arrow txt-terra" data-nav="shop" href="#shop">Shop all →</a>
+        </div>
+        <div class="grid grid-4" id="featuredGrid"><!-- products injected by JS --></div>
+      </div>
+    </section>
+
+    <!-- CTA band -->
+    <section class="container section-pad">
+      <div class="cta">
+        <div>
+          <h2 class="cta-title">Ready for a cleaner space?</h2>
+          <p class="cta-text">Book a Kazi Kleen service or stock up on Essentials — we'll take it from here.</p>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-mint" data-nav="services" type="button">Book a service</button>
+          <button class="btn btn-outline-light" data-nav="shop" type="button">Shop products</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ SERVICES (Kazi Kleen) ============ -->
+  <main class="view" id="view-services" hidden>
+    <!-- Hero -->
+    <section class="band-green">
+      <div class="container services-hero">
+        <div>
+          <span class="badge badge-green">Division 01 · Kazi Kleen</span>
+          <h1 class="hero-title">Cleaning services for homes &amp; workplaces</h1>
+          <p class="hero-lede">Vetted, trained cleaners and low-tox products. Book a once-off clean or set up a recurring schedule that fits your week.</p>
+          <div class="btn-row">
+            <a class="btn btn-green" href="#book">Request a booking</a>
+            <button class="btn btn-outline-green" data-nav="shop" type="button">Shop Essentials</button>
+          </div>
+        </div>
+        <div class="media-placeholder media-hero media-hero-alt">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#93a48c" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="m21 15-5-5L5 21"></path></svg>
+          <span class="ph-label">Services image placeholder</span>
+          <span class="ph-hint">Team at work / a spotless room</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Service list -->
+    <section class="container section-pad">
+      <span class="eyebrow txt-green">What we offer</span>
+      <h2 class="section-title">Our cleaning services</h2>
+      <div class="grid grid-4">
+        <div class="tile">
+          <div class="tile-media tile-media-wide">Service image</div>
+          <div class="tile-body">
+            <h3 class="tile-title lg">Home cleaning</h3>
+            <p class="tile-text">Regular tidy-ups — kitchens, bathrooms, floors and surfaces — that keep your home guest-ready.</p>
+            <span class="price-note">From <strong>R450</strong> / visit · <span class="muted">placeholder</span></span>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-media tile-media-wide">Service image</div>
+          <div class="tile-body">
+            <h3 class="tile-title lg">Office &amp; commercial</h3>
+            <p class="tile-text">Reliable contract cleaning for offices, retail and shared workspaces — daily or weekly.</p>
+            <span class="price-note">Custom <strong>quote</strong> · <span class="muted">placeholder</span></span>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-media tile-media-wide">Service image</div>
+          <div class="tile-body">
+            <h3 class="tile-title lg">Deep clean</h3>
+            <p class="tile-text">Top-to-bottom detail — inside cupboards, appliances, skirtings — for a full reset.</p>
+            <span class="price-note">From <strong>R900</strong> / visit · <span class="muted">placeholder</span></span>
+          </div>
+        </div>
+        <div class="tile">
+          <div class="tile-media tile-media-wide">Service image</div>
+          <div class="tile-body">
+            <h3 class="tile-title lg">Move in / move out</h3>
+            <p class="tile-text">Hand the keys back spotless. Ideal for tenants, landlords and new-home move-ins.</p>
+            <span class="price-note">From <strong>R1200</strong> · <span class="muted">placeholder</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="container section-pad">
+      <span class="eyebrow">How it works</span>
+      <h2 class="section-title">Three steps to a cleaner space</h2>
+      <div class="grid grid-3">
+        <div class="feature">
+          <span class="step-num">1</span>
+          <h4 class="feature-title">Tell us what you need</h4>
+          <p class="feature-text">Pick a service and your preferred date below.</p>
+        </div>
+        <div class="feature">
+          <span class="step-num">2</span>
+          <h4 class="feature-title">We confirm &amp; quote</h4>
+          <p class="feature-text">A quick call to confirm scope, timing and price.</p>
+        </div>
+        <div class="feature">
+          <span class="step-num">3</span>
+          <h4 class="feature-title">We clean, you relax</h4>
+          <p class="feature-text">Our vetted team arrives and gets it spotless.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booking form -->
+    <section class="container section-pad" id="book">
+      <div class="panel-dark">
+        <div>
+          <h2 class="panel-title">Request a booking</h2>
+          <p class="panel-text">Send us the details and we'll come back with a confirmed time and quote.</p>
+        </div>
+        <form class="form-grid" id="bookingForm">
+          <label class="field field-dark">Full name<input name="name" placeholder="Your name" required></label>
+          <label class="field field-dark">Contact number<input name="phone" placeholder="0__ ___ ____" inputmode="tel" data-phone required></label>
+          <label class="field field-dark">Service
+            <select name="service">
+              <option>Home cleaning</option>
+              <option>Office &amp; commercial</option>
+              <option>Deep clean</option>
+              <option>Move in / move out</option>
+            </select>
+          </label>
+          <label class="field field-dark">Preferred date<input name="date" placeholder="dd / mm / yyyy" required></label>
+          <label class="field field-dark field-full">Address<input name="address" placeholder="Street, suburb, city" required></label>
+          <button class="btn btn-mint field-full" type="submit">Send booking request</button>
+          <p class="form-note" id="bookingNote" hidden>✓ Thanks! Your booking request has been received — we'll be in touch shortly.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ SHOP ============ -->
+  <main class="view" id="view-shop" hidden>
+    <div class="container section-pad">
+      <span class="eyebrow txt-terra">Essentials · Division 02</span>
+      <h1 class="page-title">Shop cleaning &amp; fragrance</h1>
+      <p class="page-lede">Detergents to get things clean and perfumes to keep them fresh. Filter by category on the left.</p>
+
+      <div class="shop-layout">
+        <!-- Sidebar -->
+        <aside class="filter-panel">
+          <h3 class="filter-head">Filter</h3>
+          <div class="filter-group-label">Category</div>
+          <label class="filter-row">
+            <input type="checkbox" id="filterDet" checked class="check-green">
+            Detergents
+          </label>
+          <label class="filter-row">
+            <input type="checkbox" id="filterPerf" checked class="check-terra">
+            Perfumes &amp; Fragrance
+          </label>
+          <div class="filter-group-label mt">Price range</div>
+          <div class="ph-slider">Price slider placeholder</div>
+        </aside>
+
+        <!-- Grid -->
+        <div>
+          <div class="shop-toolbar">
+            <span class="result-count"><span id="resultCount">0</span> products</span>
+            <label class="sort-label">Sort
+              <select id="sortSelect" class="sort-select">
+                <option value="featured">Featured</option>
+                <option value="low">Price: low to high</option>
+                <option value="high">Price: high to low</option>
+                <option value="az">Name: A–Z</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid grid-shop" id="shopGrid"><!-- products injected by JS --></div>
+          <div class="empty-state" id="shopEmpty" hidden>No products match — tick a category on the left.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ CHECKOUT ============ -->
+  <main class="view" id="view-checkout" hidden>
+    <div class="container section-pad">
+      <span class="eyebrow txt-green">Checkout</span>
+      <h1 class="page-title">Review &amp; pay</h1>
+      <div class="pay-msg pay-msg-warn" id="payCancelled" hidden>Payment was cancelled — your cart is still saved. You can try again whenever you're ready.</div>
+      <div class="pay-msg pay-msg-info" id="payDemo" hidden>Demo mode — this simulated a Payfast payment. No real money was charged. Card payments go live once the Payfast account &amp; secure signing are connected.</div>
+      <div class="pay-msg pay-msg-warn" id="payError" hidden>Sorry — we couldn't start the payment just now. Please try again, or choose Cash on delivery.</div>
+
+      <div class="checkout-layout">
+        <!-- Left: details + payment -->
+        <div class="checkout-left">
+          <div class="panel-light">
+            <h3 class="panel-light-title">Your details</h3>
+            <div class="form-grid">
+              <label class="field">Full name<input name="c-name" placeholder="e.g. Thando Smith"></label>
+              <label class="field">Contact number<input name="c-phone" placeholder="0__ ___ ____" inputmode="tel" data-phone></label>
+              <label class="field">Email<input name="c-email" placeholder="you@email.co.za"></label>
+              <label class="field">Delivery address<input name="c-address" placeholder="Street, suburb, city"></label>
+            </div>
+          </div>
+
+          <div class="panel-light">
+            <h3 class="panel-light-title">Payment method</h3>
+            <label class="pay-option">
+              <input type="radio" name="pay" value="card" id="payCard" checked>
+              <span><span class="pay-name">Card / Instant EFT — via Payfast</span><span class="pay-sub">You'll be redirected to Payfast to pay securely, then brought back here.</span></span>
+            </label>
+            <label class="pay-option">
+              <input type="radio" name="pay" value="cod" id="payCod">
+              <span><span class="pay-name">Cash on delivery</span><span class="pay-sub">Pay the driver when your order arrives</span></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Right: order summary -->
+        <div class="panel-light order-summary">
+          <h3 class="panel-light-title">Order summary</h3>
+          <div id="checkoutEmpty">
+            <div class="empty-state sm">Your cart is empty.<br><a data-nav="shop" href="#shop" class="txt-green">Browse Essentials →</a></div>
+          </div>
+          <div id="checkoutFilled" hidden>
+            <div class="summary-lines" id="summaryLines"></div>
+            <div class="divider"></div>
+            <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal" class="strong"></span></div>
+            <div class="summary-row"><span>Delivery</span><span id="sumDelivery" class="strong"></span></div>
+            <div class="summary-row total"><span>Total</span><span id="sumTotal"></span></div>
+            <button class="btn btn-green btn-block" id="placeOrder" type="button">Place order</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirmation -->
+      <div class="confirm-block" id="confirmBlock" hidden>
+        <span class="confirm-check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+        <div class="confirm-body">
+          <h2 class="confirm-title">Order confirmed 🎉</h2>
+          <p class="confirm-text">Thanks! Your order <strong class="txt-green" id="orderNumber">KC-2026-0142</strong> is in. A confirmation has been sent to your email and our team will be in touch shortly.</p>
+          <div class="btn-row">
+            <button class="btn btn-green" data-nav="home" type="button">Back to home</button>
+            <button class="btn btn-outline-green" data-nav="shop" type="button">Keep shopping</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="footer-brand">
+          <span class="footer-logo-wrap"><img src="assets/logo.jpg" alt="Kazi Core lotus logo" class="footer-logo"></span>
+          <span class="footer-brand-name">Kazi Core Holdings</span>
+        </div>
+        <p class="footer-blurb">Cleaning services &amp; home essentials. Kazi Kleen · Essentials.</p>
+      </div>
+      <div>
+        <h4 class="footer-head">Contact</h4>
+        <p class="footer-line">📞 <a href="tel:+27634902590">063 490 2590</a></p>
+        <p class="footer-line">✉️ <a href="mailto:kazicoreholdings@gmail.com">kazicoreholdings@gmail.com</a></p>
+      </div>
+      <div>
+        <h4 class="footer-head">Explore</h4>
+        <p class="footer-line"><a data-nav="home" href="#home">Home</a></p>
+        <p class="footer-line"><a data-nav="services" href="#services">Kazi Kleen services</a></p>
+        <p class="footer-line"><a data-nav="shop" href="#shop">Essentials shop</a></p>
+      </div>
+      <div>
+        <h4 class="footer-head">Follow</h4>
+        <div class="social-row">
+          <span class="social-dot" aria-label="Facebook (coming soon)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"></path></svg>
+          </span>
+          <a class="social-dot social-link" href="https://www.instagram.com/kazi.essentials" target="_blank" rel="noopener noreferrer" aria-label="Follow Kazi Essentials on Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          </a>
+          <span class="social-dot" aria-label="TikTok (coming soon)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12V9.66a5.72 5.72 0 0 0-.78-.05 5.69 5.69 0 1 0 5.69 5.69V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.29 4.29 0 0 1-3.25-1.48z"></path></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-legal"><div class="container">© 2026 Kazi Core Holdings (Pty) Ltd · kazicore.co.za</div></div>
+  </footer>
+
+  <!-- ============ CART DRAWER ============ -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
+    <div class="drawer-head">
+      <h3 class="drawer-title">Your cart</h3>
+      <button class="drawer-close" id="closeCart" type="button" aria-label="Close cart">✕</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"><!-- items injected by JS --></div>
+    <div class="drawer-foot" id="drawerFoot" hidden>
+      <div class="summary-row total"><span>Subtotal</span><span id="drawerSubtotal"></span></div>
+      <button class="btn btn-green btn-block" id="drawerCheckout" type="button">Go to checkout →</button>
+    </div>
+  </aside>
+
+  <script src="js/payfast.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

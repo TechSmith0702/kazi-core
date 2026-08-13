@@ -1,0 +1,8 @@
+# Netlify configuration for the Kazi Core site
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Node version for the serverless functions
+[functions]
+  node_bundler = "esbuild"

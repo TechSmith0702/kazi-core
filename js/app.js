@@ -1,0 +1,347 @@
+/* ============================================================
+   Kazi Core Holdings — app logic
+   Vanilla JS: view routing, cart, shop filters/sort, checkout.
+   Prices are stored in cents (ZAR) to avoid float rounding.
+   ============================================================ */
+
+(function () {
+  'use strict';
+
+  /* ---------- Data ---------- */
+  const PRODUCTS = [
+    { id: 'd1', name: 'All-Purpose Cleaner', cat: 'Detergent', price: 4999, blurb: 'Everyday multi-surface spray.' },
+    { id: 'd2', name: 'Laundry Detergent 2L', cat: 'Detergent', price: 8999, blurb: 'Concentrated, gentle on fabrics.' },
+    { id: 'd3', name: 'Dishwashing Liquid', cat: 'Detergent', price: 3499, blurb: 'Tough on grease, kind on hands.' },
+    { id: 'p1', name: 'Home Fragrance Mist', cat: 'Perfume', price: 12999, blurb: 'Fresh linen room spray.' },
+    { id: 'p2', name: 'Reed Diffuser', cat: 'Perfume', price: 15999, blurb: 'Slow, all-day scent.' },
+    { id: 'p3', name: 'Linen Perfume Spray', cat: 'Perfume', price: 9999, blurb: 'Spritz sheets & towels.' },
+  ];
+
+  const DELIVERY_CENTS = 6000; // R60 flat delivery when cart has items
+  const CART_KEY = 'kazi-cart';
+  const PAGES = ['home', 'services', 'shop', 'checkout'];
+
+  /* ---------- State ---------- */
+  let cart = loadCart();          // { [id]: qty }
+  let page = 'home';
+  let filters = { Detergent: true, Perfume: true };
+  let sort = 'featured';
+
+  /* ---------- Helpers ---------- */
+  const $ = (sel, root) => (root || document).querySelector(sel);
+  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+  const money = (cents) => 'R' + (cents / 100).toFixed(2);
+  const byId = (id) => PRODUCTS.find((p) => p.id === id);
+  const cartCount = () => Object.values(cart).reduce((n, q) => n + q, 0);
+  const subtotal = () => Object.keys(cart).reduce((s, id) => s + byId(id).price * cart[id], 0);
+
+  function loadCart() {
+    try {
+      const raw = localStorage.getItem(CART_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+  function saveCart() {
+    try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) { /* ignore */ }
+  }
+
+  /* ---------- Routing ---------- */
+  function go(target, openDrawer) {
+    if (!PAGES.includes(target)) target = 'home';
+    page = target;
+    PAGES.forEach((p) => {
+      const el = $('#view-' + p);
+      if (el) el.hidden = p !== page;
+    });
+    $$('.nav-link').forEach((a) => a.classList.toggle('active', a.dataset.nav === page));
+    if (page === 'shop') renderShop();
+    if (page === 'checkout') renderCheckout();
+    if (openDrawer !== true) closeDrawer();
+    if (location.hash !== '#' + page) history.replaceState(null, '', '#' + page);
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- Cart operations ---------- */
+  function addToCart(id) {
+    cart[id] = (cart[id] || 0) + 1;
+    saveCart();
+    syncCartUI();
+    openDrawer();
+  }
+  function changeQty(id, delta) {
+    cart[id] = (cart[id] || 0) + delta;
+    if (cart[id] <= 0) delete cart[id];
+    saveCart();
+    syncCartUI();
+  }
+
+  /* Keep every cart-dependent surface in sync after any change */
+  function syncCartUI() {
+    const count = cartCount();
+    const badge = $('#cartBadge');
+    badge.textContent = count;
+    badge.hidden = count === 0;
+    renderDrawer();
+    if (page === 'checkout') renderCheckout();
+  }
+
+  /* ---------- Drawer ---------- */
+  function openDrawer() {
+    $('#cartDrawer').classList.add('open');
+    $('#cartDrawer').setAttribute('aria-hidden', 'false');
+    $('#drawerOverlay').classList.add('open');
+  }
+  function closeDrawer() {
+    $('#cartDrawer').classList.remove('open');
+    $('#cartDrawer').setAttribute('aria-hidden', 'true');
+    $('#drawerOverlay').classList.remove('open');
+  }
+
+  /* ---------- Rendering: product cards ---------- */
+  function productCard(p, addClass) {
+    const tagClass = p.cat === 'Detergent' ? 'tag-det' : 'tag-perf';
+    const el = document.createElement('div');
+    el.className = 'product';
+    el.innerHTML =
+      '<div class="product-media">Product photo</div>' +
+      '<div class="product-body">' +
+        '<span class="product-tag ' + tagClass + '">' + p.cat + '</span>' +
+        '<h4 class="product-name">' + p.name + '</h4>' +
+        (p.blurb ? '<p class="product-blurb">' + p.blurb + '</p>' : '') +
+        '<span class="product-price">' + money(p.price) + '</span>' +
+        '<button class="btn-add ' + addClass + '" type="button" data-add="' + p.id + '">Add to cart</button>' +
+      '</div>';
+    return el;
+  }
+
+  function renderFeatured() {
+    const grid = $('#featuredGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    PRODUCTS.slice(0, 4).forEach((p) => grid.appendChild(productCard(p, 'btn-add-terra')));
+  }
+
+  /* ---------- Rendering: shop ---------- */
+  function renderShop() {
+    let list = PRODUCTS.filter((p) => filters[p.cat]);
+    if (sort === 'low') list = list.slice().sort((a, b) => a.price - b.price);
+    else if (sort === 'high') list = list.slice().sort((a, b) => b.price - a.price);
+    else if (sort === 'az') list = list.slice().sort((a, b) => a.name.localeCompare(b.name));
+
+    const grid = $('#shopGrid');
+    grid.innerHTML = '';
+    list.forEach((p) => grid.appendChild(productCard(p, 'btn-add-green')));
+
+    $('#resultCount').textContent = list.length;
+    $('#shopEmpty').hidden = list.length !== 0;
+  }
+
+  /* ---------- Rendering: drawer ---------- */
+  function renderDrawer() {
+    const body = $('#drawerBody');
+    const foot = $('#drawerFoot');
+    const ids = Object.keys(cart);
+
+    if (ids.length === 0) {
+      body.innerHTML = '<div class="drawer-empty">Nothing here yet.<br><span>Add an Essentials product to get started.</span></div>';
+      foot.hidden = true;
+      return;
+    }
+
+    const wrap = document.createElement('div');
+    wrap.className = 'drawer-items';
+    ids.forEach((id) => {
+      const p = byId(id);
+      const row = document.createElement('div');
+      row.className = 'drawer-item';
+      row.innerHTML =
+        '<span class="drawer-thumb"></span>' +
+        '<div class="drawer-item-info">' +
+          '<span class="drawer-item-name">' + p.name + '</span>' +
+          '<span class="drawer-item-price">' + money(p.price) + '</span>' +
+        '</div>' +
+        '<div class="qty-ctrl">' +
+          '<button class="qty-btn" type="button" data-dec="' + id + '">−</button>' +
+          '<span class="qty-val">' + cart[id] + '</span>' +
+          '<button class="qty-btn" type="button" data-inc="' + id + '">+</button>' +
+        '</div>';
+      wrap.appendChild(row);
+    });
+    body.innerHTML = '';
+    body.appendChild(wrap);
+
+    $('#drawerSubtotal').textContent = money(subtotal());
+    foot.hidden = false;
+  }
+
+  /* ---------- Rendering: checkout ---------- */
+  function renderCheckout() {
+    const ids = Object.keys(cart);
+    const empty = $('#checkoutEmpty');
+    const filled = $('#checkoutFilled');
+
+    if (ids.length === 0) {
+      empty.hidden = false;
+      filled.hidden = true;
+      return;
+    }
+    empty.hidden = true;
+    filled.hidden = false;
+
+    const lines = $('#summaryLines');
+    lines.innerHTML = '';
+    ids.forEach((id) => {
+      const p = byId(id);
+      const qty = cart[id];
+      const row = document.createElement('div');
+      row.className = 'summary-item';
+      row.innerHTML =
+        '<span class="summary-thumb"></span>' +
+        '<span class="summary-item-info">' +
+          '<span class="summary-item-name">' + p.name + '</span>' +
+          '<span class="summary-item-qty">Qty ' + qty + '</span>' +
+        '</span>' +
+        '<span class="summary-item-line">' + money(p.price * qty) + '</span>';
+      lines.appendChild(row);
+    });
+
+    const sub = subtotal();
+    $('#sumSubtotal').textContent = money(sub);
+    $('#sumDelivery').textContent = money(DELIVERY_CENTS);
+    $('#sumTotal').textContent = money(sub + DELIVERY_CENTS);
+  }
+
+  // Split a full name into first / last for Payfast
+  function splitName(full) {
+    var parts = (full || '').trim().split(/\s+/);
+    return { first: parts.shift() || '', last: parts.join(' ') };
+  }
+
+  function showConfirmation() {
+    cart = {};
+    saveCart();
+    syncCartUI();
+    renderCheckout();
+    $('#confirmBlock').hidden = false;
+    $('#confirmBlock').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function placeOrder() {
+    if (cartCount() === 0) return;
+
+    var method = (document.querySelector('input[name="pay"]:checked') || {}).value;
+
+    if (method === 'card' && window.KaziPayfast) {
+      // Hand off to Payfast. On return, the ?payment= handler in init()
+      // shows the confirmation (success) or the cancelled note.
+      var nm = splitName((document.querySelector('[name="c-name"]') || {}).value);
+      $('#payError').hidden = true;
+      var result = window.KaziPayfast.checkout({
+        cart: cart,
+        firstName: nm.first,
+        lastName: nm.last,
+        email: (document.querySelector('[name="c-email"]') || {}).value || '',
+        cell: (document.querySelector('[name="c-phone"]') || {}).value || '',
+        paymentId: 'KC-' + Date.now()
+      }, {
+        onError: function () { $('#payError').hidden = false; }
+      });
+
+      if (result && result.simulated) {
+        // Demo mode — no real redirect. Show the flow's outcome.
+        $('#payDemo').hidden = false;
+        showConfirmation();
+      }
+      return; // for real payments the browser navigates to Payfast
+    }
+
+    // Cash on delivery (or Payfast not loaded) — confirm locally.
+    showConfirmation();
+  }
+
+  // Handle the redirect back from Payfast (?payment=success | cancelled)
+  function handlePaymentReturn() {
+    var params = new URLSearchParams(location.search);
+    var status = params.get('payment');
+    if (!status) return;
+
+    // Clean the query out of the URL so a refresh doesn't re-trigger it
+    history.replaceState(null, '', location.pathname + '#checkout');
+
+    if (status === 'success') {
+      go('checkout');
+      showConfirmation();
+    } else if (status === 'cancelled') {
+      go('checkout');
+      $('#payCancelled').hidden = false;
+    }
+  }
+
+  /* ---------- Phone formatting (0__ ___ ____) ---------- */
+  function formatPhone(v) {
+    const d = v.replace(/\D/g, '').slice(0, 10);
+    return [d.slice(0, 3), d.slice(3, 6), d.slice(6, 10)].filter(Boolean).join(' ');
+  }
+
+  /* ---------- Wire up events ---------- */
+  function init() {
+    // Nav / any element with data-nav
+    document.body.addEventListener('click', (e) => {
+      const navEl = e.target.closest('[data-nav]');
+      if (navEl) { e.preventDefault(); go(navEl.dataset.nav); return; }
+
+      const addEl = e.target.closest('[data-add]');
+      if (addEl) { addToCart(addEl.dataset.add); return; }
+
+      const incEl = e.target.closest('[data-inc]');
+      if (incEl) { changeQty(incEl.dataset.inc, 1); return; }
+
+      const decEl = e.target.closest('[data-dec]');
+      if (decEl) { changeQty(decEl.dataset.dec, -1); return; }
+    });
+
+    // Cart drawer open/close
+    $('#openCart').addEventListener('click', openDrawer);
+    $('#closeCart').addEventListener('click', closeDrawer);
+    $('#drawerOverlay').addEventListener('click', closeDrawer);
+    $('#drawerCheckout').addEventListener('click', () => go('checkout'));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+
+    // Shop filters + sort
+    $('#filterDet').addEventListener('change', (e) => { filters.Detergent = e.target.checked; renderShop(); });
+    $('#filterPerf').addEventListener('change', (e) => { filters.Perfume = e.target.checked; renderShop(); });
+    $('#sortSelect').addEventListener('change', (e) => { sort = e.target.value; renderShop(); });
+
+    // Checkout
+    $('#placeOrder').addEventListener('click', placeOrder);
+
+    // Booking form (front-end only — not yet connected to a backend)
+    $('#bookingForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      e.target.reset();
+      $('#bookingNote').hidden = false;
+    });
+
+    // Live phone formatting on any [data-phone] input
+    $$('[data-phone]').forEach((input) => {
+      input.addEventListener('input', (e) => { e.target.value = formatPhone(e.target.value); });
+    });
+
+    // Initial render
+    renderFeatured();
+    syncCartUI();
+
+    // Open on the page named in the URL hash, if valid
+    const initial = (location.hash || '').replace('#', '');
+    go(PAGES.includes(initial) ? initial : 'home');
+
+    // If we've just come back from Payfast, react to the result
+    handlePaymentReturn();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
