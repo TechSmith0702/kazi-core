@@ -10,13 +10,12 @@
   /* ---------- Data ----------
      available:true items are on sale now (need price + image).
      available:false items show as "Coming soon" (not buyable).
-     NOTE: prices below marked PLACEHOLDER — confirm real prices with
-     the owner before going live. Keep in sync with the server-side
-     catalogue in netlify/functions/payfast-sign.js. */
+     Prices in cents. Keep in sync with the server-side catalogue in
+     netlify/functions/payfast-sign.js. */
   const PRODUCTS = [
     // On sale now — real Essentials products
-    { id: 'sv', name: 'Sweet Vanilla', cat: 'Perfume', price: 8999 /* PLACEHOLDER */, blurb: 'Sweet vanilla room & linen mist. 100 ml.', image: 'assets/products/sweet-vanilla.jpg', available: true },
-    { id: 'fl', name: 'Fresh Linen', cat: 'Perfume', price: 8999 /* PLACEHOLDER */, blurb: 'Freshens the air and protects the fabric. 100 ml.', image: 'assets/products/fresh-linen.jpg', available: true },
+    { id: 'sv', name: 'Sweet Vanilla', cat: 'Perfume', price: 6500, blurb: 'Sweet vanilla room & linen mist. 100 ml.', image: 'assets/products/sweet-vanilla.jpg', available: true },
+    { id: 'fl', name: 'Fresh Linen', cat: 'Perfume', price: 7000, blurb: 'Freshens the air and protects the fabric. 100 ml.', image: 'assets/products/fresh-linen.jpg', available: true },
     // Coming soon — detergent range (placeholder names, easy to edit)
     { id: 'd1', name: 'All-Purpose Cleaner', cat: 'Detergent', price: null, blurb: 'Everyday multi-surface spray.', available: false },
     { id: 'd2', name: 'Laundry Detergent 2L', cat: 'Detergent', price: null, blurb: 'Concentrated, gentle on fabrics.', available: false },
