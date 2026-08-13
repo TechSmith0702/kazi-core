@@ -14,14 +14,8 @@
      netlify/functions/payfast-sign.js. */
   const PRODUCTS = [
     // On sale now — real Essentials products
-    { id: 'sv', name: 'Sweet Vanilla', cat: 'Perfume', price: 6500, blurb: 'Sweet vanilla room & linen mist. 100 ml.', image: 'assets/products/sweet-vanilla.jpg', available: true },
-    { id: 'fl', name: 'Fresh Linen', cat: 'Perfume', price: 7000, blurb: 'Freshens the air and protects the fabric. 100 ml.', image: 'assets/products/fresh-linen.jpg', available: true },
-    // Coming soon — detergent range (placeholder names, easy to edit)
-    { id: 'd1', name: 'All-Purpose Cleaner', cat: 'Detergent', price: null, blurb: 'Everyday multi-surface spray.', available: false },
-    { id: 'd2', name: 'Laundry Detergent 2L', cat: 'Detergent', price: null, blurb: 'Concentrated, gentle on fabrics.', available: false },
-    { id: 'd3', name: 'Dishwashing Liquid', cat: 'Detergent', price: null, blurb: 'Tough on grease, kind on hands.', available: false },
-    // Coming soon — more fragrances
-    { id: 'p1', name: 'Reed Diffuser', cat: 'Perfume', price: null, blurb: 'Slow, all-day scent.', available: false },
+    { id: 'fl', name: 'Fresh Linen', cat: 'Linen Spray', price: 7000, blurb: 'Freshens the air and protects the fabric. 100 ml.', image: 'assets/products/fresh-linen.jpg', available: true },
+    { id: 'sv', name: 'Sweet Vanilla', cat: 'Body Mist', price: 6500, blurb: 'Sweet vanilla body & room mist. 100 ml.', image: 'assets/products/sweet-vanilla.jpg', available: true },
   ];
 
   const DELIVERY_CENTS = 6000; // R60 flat delivery when cart has items
@@ -31,7 +25,7 @@
   /* ---------- State ---------- */
   let cart = loadCart();          // { [id]: qty }
   let page = 'home';
-  let filters = { Detergent: true, Perfume: true };
+  let filters = { 'Linen Spray': true, 'Body Mist': true };
   let sort = 'featured';
 
   /* ---------- Helpers ---------- */
@@ -118,7 +112,7 @@
 
   /* ---------- Rendering: product cards ---------- */
   function productCard(p, addClass) {
-    const tagClass = p.cat === 'Detergent' ? 'tag-det' : 'tag-perf';
+    const tagClass = p.cat === 'Linen Spray' ? 'tag-linen' : 'tag-mist';
     const canBuy = buyable(p);
     const el = document.createElement('div');
     el.className = 'product' + (canBuy ? '' : ' product-soon');
@@ -201,7 +195,9 @@
       const row = document.createElement('div');
       row.className = 'drawer-item';
       row.innerHTML =
-        '<span class="drawer-thumb"></span>' +
+        '<span class="drawer-thumb' + (p.image ? ' has-img' : '') + '">' +
+          (p.image ? '<img class="thumb-img" src="' + p.image + '" alt="' + p.name + '" onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">' : '') +
+        '</span>' +
         '<div class="drawer-item-info">' +
           '<span class="drawer-item-name">' + p.name + '</span>' +
           '<span class="drawer-item-price">' + money(p.price) + '</span>' +
@@ -242,7 +238,9 @@
       const row = document.createElement('div');
       row.className = 'summary-item';
       row.innerHTML =
-        '<span class="summary-thumb"></span>' +
+        '<span class="summary-thumb' + (p.image ? ' has-img' : '') + '">' +
+          (p.image ? '<img class="thumb-img" src="' + p.image + '" alt="' + p.name + '" onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">' : '') +
+        '</span>' +
         '<span class="summary-item-info">' +
           '<span class="summary-item-name">' + p.name + '</span>' +
           '<span class="summary-item-qty">Qty ' + qty + '</span>' +
@@ -354,8 +352,8 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
 
     // Shop filters + sort
-    $('#filterDet').addEventListener('change', (e) => { filters.Detergent = e.target.checked; renderShop(); });
-    $('#filterPerf').addEventListener('change', (e) => { filters.Perfume = e.target.checked; renderShop(); });
+    $('#filterLinen').addEventListener('change', (e) => { filters['Linen Spray'] = e.target.checked; renderShop(); });
+    $('#filterMist').addEventListener('change', (e) => { filters['Body Mist'] = e.target.checked; renderShop(); });
     $('#sortSelect').addEventListener('change', (e) => { sort = e.target.value; renderShop(); });
 
     // Checkout
