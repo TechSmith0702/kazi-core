@@ -27,8 +27,10 @@ const PROCESS_URL = MODE === 'live'
 // Source-of-truth catalogue (prices in cents). Only on-sale products go
 // here. Keep in sync with the buyable items in js/app.js.
 const PRODUCTS = {
+  fl: { name: 'Fresh Linen', price: 7000 },
+  wrl: { name: 'Wild Rose Linen', price: 7000 },
   sv: { name: 'Sweet Vanilla', price: 6500 },
-  fl: { name: 'Fresh Linen', price: 7000 }
+  br: { name: 'Botanical Rose', price: 6500 }
 };
 const DELIVERY_CENTS = 6000;
 

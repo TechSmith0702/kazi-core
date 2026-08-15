@@ -13,14 +13,21 @@
      Prices in cents. Keep in sync with the server-side catalogue in
      netlify/functions/payfast-sign.js. */
   const PRODUCTS = [
-    // On sale now — real Essentials products
+    // Linen Sprays (R70)
     { id: 'fl', name: 'Fresh Linen', cat: 'Linen Spray', price: 7000, blurb: 'Freshens the air and protects the fabric. 100 ml.', image: 'assets/products/fresh-linen.jpg', available: true },
+    { id: 'wrl', name: 'Wild Rose Linen', cat: 'Linen Spray', price: 7000, blurb: 'Wild rose scent — freshens the air and protects the fabric. 100 ml.', image: 'assets/products/wild-rose-linen.jpg', available: true },
+    // Body Mists (R65)
     { id: 'sv', name: 'Sweet Vanilla', cat: 'Body Mist', price: 6500, blurb: 'Sweet vanilla body & room mist. 100 ml.', image: 'assets/products/sweet-vanilla.jpg', available: true },
+    { id: 'br', name: 'Botanical Rose', cat: 'Body Mist', price: 6500, blurb: 'Botanical rose body & room mist. 100 ml.', image: 'assets/products/botanical-rose.jpg', available: true },
   ];
 
   const DELIVERY_CENTS = 6000; // R60 flat delivery when cart has items
   const CART_KEY = 'kazi-cart';
   const PAGES = ['home', 'services', 'shop', 'checkout'];
+  // Bump this whenever a product photo is replaced (same filename) so
+  // browsers fetch the new image instead of a cached old one.
+  const ASSET_V = '2';
+  const imgSrc = (p) => p.image + '?v=' + ASSET_V;
 
   /* ---------- State ---------- */
   let cart = loadCart();          // { [id]: qty }
@@ -122,7 +129,7 @@
     const media =
       '<div class="product-media">' +
         (canBuy ? '' : '<span class="soon-flag">Coming soon</span>') +
-        (p.image ? '<img class="product-img" src="' + p.image + '" alt="' + p.name + '" loading="lazy" onerror="this.remove()">' : '') +
+        (p.image ? '<img class="product-img" src="' + imgSrc(p) + '" alt="' + p.name + '" loading="lazy" onerror="this.remove()">' : '') +
         '<span class="product-media-ph">Product photo</span>' +
       '</div>';
 
@@ -196,7 +203,7 @@
       row.className = 'drawer-item';
       row.innerHTML =
         '<span class="drawer-thumb' + (p.image ? ' has-img' : '') + '">' +
-          (p.image ? '<img class="thumb-img" src="' + p.image + '" alt="' + p.name + '" onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">' : '') +
+          (p.image ? '<img class="thumb-img" src="' + imgSrc(p) + '" alt="' + p.name + '" onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">' : '') +
         '</span>' +
         '<div class="drawer-item-info">' +
           '<span class="drawer-item-name">' + p.name + '</span>' +
@@ -239,7 +246,7 @@
       row.className = 'summary-item';
       row.innerHTML =
         '<span class="summary-thumb' + (p.image ? ' has-img' : '') + '">' +
-          (p.image ? '<img class="thumb-img" src="' + p.image + '" alt="' + p.name + '" onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">' : '') +
+          (p.image ? '<img class="thumb-img" src="' + imgSrc(p) + '" alt="' + p.name + '" onerror="this.parentNode.classList.remove(\'has-img\');this.remove()">' : '') +
         '</span>' +
         '<span class="summary-item-info">' +
           '<span class="summary-item-name">' + p.name + '</span>' +
