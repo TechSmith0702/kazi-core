@@ -366,11 +366,30 @@
     // Checkout
     $('#placeOrder').addEventListener('click', placeOrder);
 
-    // Booking form (front-end only — not yet connected to a backend)
+    // Booking form → submitted to Netlify Forms via AJAX (keeps the SPA
+    // on the page and shows an inline thank-you). Netlify captures it and
+    // can email the booking to the owner. Only records on the live Netlify
+    // site — locally the POST has nowhere to go, so it shows the error note.
     $('#bookingForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      e.target.reset();
-      $('#bookingNote').hidden = false;
+      const form = e.target;
+      $('#bookingNote').hidden = true;
+      $('#bookingErr').hidden = true;
+      const body = new URLSearchParams(new FormData(form)).toString();
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('booking submit failed: ' + res.status);
+          form.reset();
+          $('#bookingNote').hidden = false;
+        })
+        .catch((err) => {
+          console.error('[booking]', err);
+          $('#bookingErr').hidden = false;
+        });
     });
 
     // Live phone formatting on any [data-phone] input

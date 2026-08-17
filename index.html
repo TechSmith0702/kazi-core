@@ -248,7 +248,9 @@
           <h2 class="panel-title">Request a booking</h2>
           <p class="panel-text">Send us the details and we'll come back with a confirmed time and quote.</p>
         </div>
-        <form class="form-grid" id="bookingForm">
+        <form class="form-grid" id="bookingForm" name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="booking">
+          <p class="hp-field"><label>Leave this field empty <input name="bot-field"></label></p>
           <label class="field field-dark">Full name<input name="name" placeholder="Your name" required></label>
           <label class="field field-dark">Contact number<input name="phone" placeholder="0__ ___ ____" inputmode="tel" data-phone required></label>
           <label class="field field-dark">Service
@@ -263,6 +265,7 @@
           <label class="field field-dark field-full">Address<input name="address" placeholder="Street, suburb, city" required></label>
           <button class="btn btn-mint field-full" type="submit">Send booking request</button>
           <p class="form-note" id="bookingNote" hidden>✓ Thanks! Your booking request has been received — we'll be in touch shortly.</p>
+          <p class="form-note form-note-err" id="bookingErr" hidden>Sorry — we couldn't send that just now. Please try again, or call us on 063&nbsp;490&nbsp;2590.</p>
         </form>
       </div>
     </section>

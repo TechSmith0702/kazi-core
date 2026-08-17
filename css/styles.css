@@ -283,6 +283,8 @@ a { text-decoration: none; color: inherit; }
 .field-dark input, .field-dark select { border: 1.5px solid #4a5f52; background: #33473b; color: #fbfaf5; }
 .field-dark input::placeholder { color: #8fa593; }
 .form-note { grid-column: 1 / -1; color: var(--mint); font-weight: 700; font-size: 15px; margin: 0; }
+.form-note-err { color: #f0a58a; }
+.hp-field { display: none; }
 
 /* ---------- Shop layout ---------- */
 .shop-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px; align-items: start; }

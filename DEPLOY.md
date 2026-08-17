@@ -93,6 +93,26 @@ That's it — real card + Instant EFT payments are live. 🎉
 
 ---
 
+## C. Booking requests (Netlify Forms)
+
+The "Request a booking" form on the Kazi Kleen page is wired up as a **Netlify Form**
+(named `booking`). Netlify captures submissions automatically once the site is deployed —
+no extra code. To receive the bookings:
+
+1. Deploy the site (Part A). On the first deploy, Netlify detects the `booking` form.
+2. In Netlify: **Forms** (left sidebar) → you'll see **booking** listed. Submissions appear here.
+3. To get emailed on each booking: **Forms → Settings & usage → Form notifications →
+   Add notification → Email notification**, and enter `kazicoreholdings@gmail.com`.
+   (You can also add a notification on the `booking` form specifically.)
+4. Test it: open the live site, submit a booking, and check it appears under **Forms** and
+   arrives by email.
+
+Notes:
+- Free tier covers 100 submissions/month. Spam is filtered by a hidden honeypot field.
+- Bookings do **not** work on `localhost` — only on the deployed Netlify site.
+
+---
+
 ## Later (optional, nice to have)
 - **Order emails:** right now a completed payment is verified and logged. We can add a step in
   `payfast-notify.js` to email each order to `kazicoreholdings@gmail.com`.
