@@ -26,7 +26,7 @@
   const PAGES = ['home', 'services', 'shop', 'checkout'];
   // Bump this whenever a product photo is replaced (same filename) so
   // browsers fetch the new image instead of a cached old one.
-  const ASSET_V = '2';
+  const ASSET_V = '3';
   const imgSrc = (p) => p.image + '?v=' + ASSET_V;
 
   /* ---------- State ---------- */
