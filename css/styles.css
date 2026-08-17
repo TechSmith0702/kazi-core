@@ -197,6 +197,7 @@ a { text-decoration: none; color: inherit; }
 .tile-text { margin: 0 0 14px; font-size: 14px; line-height: 1.5; color: var(--muted-2); }
 .price-note { font-weight: 700; font-size: 13px; color: var(--muted-3); }
 .price-note strong { color: var(--green-ink); font-size: 16px; }
+.svc-price { display: block; margin-top: 14px; }
 
 /* ---------- Product cards ---------- */
 .product { background: var(--card); border: 1.5px solid #ecddd0; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; }
