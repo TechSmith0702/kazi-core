@@ -147,6 +147,9 @@ a { text-decoration: none; color: inherit; }
   background: #eceee6; border: 2px dashed #bcc6b4; border-radius: 32px;
 }
 .media-hero { aspect-ratio: 5 / 4; }
+/* Real hero photo */
+.hero-photo { aspect-ratio: 5 / 4; border-radius: 32px; overflow: hidden; box-shadow: 0 18px 40px rgba(43,63,52,.14); }
+.hero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .media-hero-alt { background: #e0e6da; border-color: #b3c0ac; color: #7f8d78; }
 .ph-label { font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
 .ph-hint { font-size: 13px; max-width: 26ch; }
