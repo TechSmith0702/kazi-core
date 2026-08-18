@@ -17,8 +17,8 @@
     { id: 'fl', name: 'Fresh Linen', cat: 'Linen Spray', price: 7000, blurb: 'Freshens the air and protects the fabric. 100 ml.', image: 'assets/products/fresh-linen.jpg', available: true },
     { id: 'wrl', name: 'Wild Rose Linen', cat: 'Linen Spray', price: 7000, blurb: 'Wild rose scent — freshens the air and protects the fabric. 100 ml.', image: 'assets/products/wild-rose-linen.jpg', available: true },
     // Body Mists (R65)
-    { id: 'sv', name: 'Sweet Vanilla', cat: 'Body Mist', price: 6500, blurb: 'Sweet vanilla body & room mist. 100 ml.', image: 'assets/products/sweet-vanilla.jpg', available: true },
-    { id: 'br', name: 'Botanical Rose', cat: 'Body Mist', price: 6500, blurb: 'Botanical rose body & room mist. 100 ml.', image: 'assets/products/botanical-rose.jpg', available: true },
+    { id: 'sv', name: 'Sweet Vanilla', cat: 'Body Mist', price: 6500, blurb: 'Sweet vanilla body mist. 100 ml.', image: 'assets/products/sweet-vanilla.jpg', available: true },
+    { id: 'br', name: 'Botanical Rose', cat: 'Body Mist', price: 6500, blurb: 'Botanical rose body mist. 100 ml.', image: 'assets/products/botanical-rose.jpg', available: true },
   ];
 
   const DELIVERY_CENTS = 6000; // R60 flat delivery when cart has items

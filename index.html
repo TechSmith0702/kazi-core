@@ -254,6 +254,7 @@
           <p class="hp-field"><label>Leave this field empty <input name="bot-field"></label></p>
           <label class="field field-dark">Full name<input name="name" placeholder="Your name" autocomplete="name" required></label>
           <label class="field field-dark">Contact number<input name="phone" placeholder="0__ ___ ____" inputmode="tel" autocomplete="tel" data-phone required></label>
+          <label class="field field-dark">Email<input type="email" name="email" placeholder="you@email.co.za" autocomplete="email" required></label>
           <label class="field field-dark">Service
             <select name="service">
               <option>Home cleaning</option>
@@ -334,10 +335,13 @@
           <div class="panel-light">
             <h3 class="panel-light-title">Your details</h3>
             <div class="form-grid">
-              <label class="field">Full name<input name="c-name" placeholder="e.g. Thando Smith"></label>
-              <label class="field">Contact number<input name="c-phone" placeholder="0__ ___ ____" inputmode="tel" data-phone></label>
-              <label class="field">Email<input name="c-email" placeholder="you@email.co.za"></label>
-              <label class="field">Delivery address<input name="c-address" placeholder="Street, suburb, city"></label>
+              <label class="field">Full name<input name="c-name" placeholder="e.g. Thando Smith" autocomplete="name"></label>
+              <label class="field">Contact number<input name="c-phone" placeholder="0__ ___ ____" inputmode="tel" autocomplete="tel" data-phone></label>
+              <label class="field">Email<input type="email" name="c-email" placeholder="you@email.co.za" autocomplete="email"></label>
+              <label class="field">Delivery address<input name="c-street" placeholder="e.g. 12 Main Road" autocomplete="address-line1"></label>
+              <label class="field">Suburb / area<input name="c-suburb" placeholder="e.g. Rosebank" autocomplete="address-line2"></label>
+              <label class="field">City / town<input name="c-city" placeholder="e.g. Johannesburg" autocomplete="address-level2"></label>
+              <label class="field">Postal code<input name="c-postal" placeholder="e.g. 2196" autocomplete="postal-code" inputmode="numeric"></label>
             </div>
           </div>
 
