@@ -140,6 +140,12 @@ a { text-decoration: none; color: inherit; }
 }
 .hero-lede { margin: 20px 0 0; font-size: 18px; line-height: 1.6; color: var(--muted); max-width: 44ch; }
 
+/* Home hero: enlarge the left column so it balances the tall portrait photo */
+.hero .hero-title { font-size: clamp(44px, 6.2vw, 72px); }
+.hero .hero-lede { font-size: 19px; line-height: 1.62; max-width: 46ch; }
+.hero .btn-row { margin-top: 34px; }
+.hero .btn-row .btn { padding: 17px 34px; font-size: 17px; }
+
 /* Placeholder media boxes */
 .media-placeholder {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
