@@ -397,6 +397,18 @@
       input.addEventListener('input', (e) => { e.target.value = formatPhone(e.target.value); });
     });
 
+    // Booking date: earliest selectable date is one week from today
+    // (recomputed on every load so it never goes stale). No upper limit.
+    const dateInput = $('#bookingDate');
+    if (dateInput) {
+      const ymd = (d) => d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+      const earliest = new Date();
+      earliest.setDate(earliest.getDate() + 7);
+      dateInput.min = ymd(earliest);
+    }
+
     // Initial render
     renderFeatured();
     syncCartUI();

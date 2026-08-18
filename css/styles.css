@@ -284,6 +284,9 @@ a { text-decoration: none; color: inherit; }
 .field-dark { color: #c3d0c4; }
 .field-dark input, .field-dark select { border: 1.5px solid #4a5f52; background: #33473b; color: #fbfaf5; }
 .field-dark input::placeholder { color: #8fa593; }
+/* Native date picker: render its calendar icon light-on-dark */
+.field-dark input[type="date"] { color-scheme: dark; }
+.field-hint { font-weight: 400; font-size: 12px; color: #8fa593; margin-top: 2px; }
 .form-note { grid-column: 1 / -1; color: var(--mint); font-weight: 700; font-size: 15px; margin: 0; }
 .form-note-err { color: #f0a58a; }
 .hp-field { display: none; }

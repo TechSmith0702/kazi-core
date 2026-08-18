@@ -261,7 +261,7 @@
               <option>Move in / move out</option>
             </select>
           </label>
-          <label class="field field-dark">Preferred date<input name="date" placeholder="dd / mm / yyyy" required></label>
+          <label class="field field-dark">Preferred date<input type="date" name="date" id="bookingDate" required><span class="field-hint">Please choose a date at least a week from today.</span></label>
           <label class="field field-dark field-full">Address<input name="address" placeholder="Street, suburb, city" required></label>
           <button class="btn btn-mint field-full" type="submit">Send booking request</button>
           <p class="form-note" id="bookingNote" hidden>✓ Thanks! Your booking request has been received — we'll be in touch shortly.</p>
