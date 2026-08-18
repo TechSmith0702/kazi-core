@@ -34,6 +34,7 @@
   let page = 'home';
   let filters = { 'Linen Spray': true, 'Body Mist': true };
   let sort = 'featured';
+  let priceCap = Infinity;        // max price (Rand) from the slider
 
   /* ---------- Helpers ---------- */
   const $ = (sel, root) => (root || document).querySelector(sel);
@@ -68,6 +69,11 @@
   function go(target, openDrawer) {
     if (!PAGES.includes(target)) target = 'home';
     page = target;
+    // Clear transient checkout banners so "Order confirmed" only shows right
+    // after Place order (and disappears on Back to home / Keep shopping).
+    ['#confirmBlock', '#payDemo', '#payCancelled', '#payError'].forEach((sel) => {
+      const el = $(sel); if (el) el.hidden = true;
+    });
     PAGES.forEach((p) => {
       const el = $('#view-' + p);
       if (el) el.hidden = p !== page;
@@ -166,7 +172,8 @@
 
   /* ---------- Rendering: shop ---------- */
   function renderShop() {
-    const list = PRODUCTS.filter((p) => filters[p.cat]);
+    // Category + price-cap filter (coming-soon items have no price → always kept).
+    const list = PRODUCTS.filter((p) => filters[p.cat] && (p.price == null || p.price <= priceCap * 100));
     // Sort only the buyable items; coming-soon always sit at the end.
     let avail = list.filter((p) => p.available);
     const soon = list.filter((p) => !p.available);
@@ -362,6 +369,24 @@
     $('#filterLinen').addEventListener('change', (e) => { filters['Linen Spray'] = e.target.checked; renderShop(); });
     $('#filterMist').addEventListener('change', (e) => { filters['Body Mist'] = e.target.checked; renderShop(); });
     $('#sortSelect').addEventListener('change', (e) => { sort = e.target.value; renderShop(); });
+
+    // Price slider — bounds derived from the products, defaults to "show all".
+    const priceEl = $('#priceRange');
+    if (priceEl) {
+      const prices = PRODUCTS.filter(buyable).map((p) => p.price / 100);
+      const maxP = prices.length ? Math.ceil(Math.max.apply(null, prices) / 5) * 5 : 100;
+      priceEl.min = 0;
+      priceEl.max = maxP;
+      priceEl.value = maxP;
+      priceEl.step = 5;
+      priceCap = maxP;
+      $('#priceCapVal').textContent = 'R' + maxP;
+      priceEl.addEventListener('input', (e) => {
+        priceCap = Number(e.target.value);
+        $('#priceCapVal').textContent = 'R' + priceCap;
+        renderShop();
+      });
+    }
 
     // Checkout
     $('#placeOrder').addEventListener('click', placeOrder);

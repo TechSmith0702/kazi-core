@@ -327,7 +327,14 @@ a { text-decoration: none; color: inherit; }
 .check-green { accent-color: var(--green); }
 .check-blue { accent-color: #3a6b86; }
 .check-terra { accent-color: var(--terra-btn); }
-.ph-slider { background: #eceee6; border: 2px dashed #cfd6c8; border-radius: 12px; padding: 14px; font-size: 13px; color: var(--muted-3); text-align: center; }
+/* Price range slider */
+.price-filter { padding-top: 4px; }
+.price-range { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 999px; background: #dfe4d8; outline: none; margin: 6px 0 10px; }
+.price-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--green); border: 3px solid #fff; box-shadow: 0 1px 4px rgba(43,63,52,.35); cursor: pointer; }
+.price-range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--green); border: 3px solid #fff; box-shadow: 0 1px 4px rgba(43,63,52,.35); cursor: pointer; }
+.price-range:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+.price-readout { font-size: 14px; color: var(--muted); font-weight: 700; }
+.price-readout strong { color: var(--green-ink); font-size: 16px; }
 
 .shop-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
 .result-count { font-size: 14px; color: var(--muted-2); font-weight: 700; }
