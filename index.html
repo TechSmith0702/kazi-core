@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+  <link rel="stylesheet" href="css/vendor/flatpickr.min.css">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -261,7 +262,7 @@
               <option>Move in / move out</option>
             </select>
           </label>
-          <label class="field field-dark">Preferred date<input type="date" name="date" id="bookingDate" required><span class="field-hint">Please choose a date at least a week from today.</span></label>
+          <label class="field field-dark">Preferred date<input type="text" name="date" id="bookingDate" placeholder="dd/mm/yyyy" autocomplete="off" required><span class="field-hint">Tap to pick a date — at least a week from today.</span></label>
           <label class="field field-dark field-full">Address<input name="address" placeholder="Street, suburb, city" required></label>
           <button class="btn btn-mint field-full" type="submit">Send booking request</button>
           <p class="form-note" id="bookingNote" hidden>✓ Thanks! Your booking request has been received — we'll be in touch shortly.</p>
@@ -435,6 +436,7 @@
     </div>
   </aside>
 
+  <script src="js/vendor/flatpickr.min.js"></script>
   <script src="js/payfast.js"></script>
   <script src="js/app.js"></script>
 </body>

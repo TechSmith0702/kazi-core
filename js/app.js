@@ -397,16 +397,19 @@
       input.addEventListener('input', (e) => { e.target.value = formatPhone(e.target.value); });
     });
 
-    // Booking date: earliest selectable date is one week from today
-    // (recomputed on every load so it never goes stale). No upper limit.
+    // Booking date: flatpickr calendar — consistent dd/mm/yyyy on every
+    // device, calendar-only (no typing), earliest date one week from today
+    // (recomputed each load so it never goes stale), no upper limit.
     const dateInput = $('#bookingDate');
-    if (dateInput) {
-      const ymd = (d) => d.getFullYear() + '-' +
-        String(d.getMonth() + 1).padStart(2, '0') + '-' +
-        String(d.getDate()).padStart(2, '0');
+    if (dateInput && window.flatpickr) {
       const earliest = new Date();
       earliest.setDate(earliest.getDate() + 7);
-      dateInput.min = ymd(earliest);
+      window.flatpickr(dateInput, {
+        dateFormat: 'd/m/Y',   // what gets stored/submitted, e.g. 25/08/2026
+        minDate: earliest,
+        disableMobile: true,   // use flatpickr's own calendar on mobile too
+        allowInput: false      // calendar-only, block manual typing
+      });
     }
 
     // Initial render

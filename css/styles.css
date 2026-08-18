@@ -287,6 +287,17 @@ a { text-decoration: none; color: inherit; }
 /* Native date picker: render its calendar icon light-on-dark */
 .field-dark input[type="date"] { color-scheme: dark; }
 .field-hint { font-weight: 400; font-size: 12px; color: #8fa593; margin-top: 2px; }
+
+/* flatpickr calendar — brand theming (green accents) */
+.flatpickr-day.selected, .flatpickr-day.selected:hover,
+.flatpickr-day.startRange, .flatpickr-day.endRange { background: var(--green); border-color: var(--green); }
+.flatpickr-day:hover { background: #eaf0e8; }
+.flatpickr-day.today { border-color: var(--green); }
+.flatpickr-day.today:hover { background: var(--green); border-color: var(--green); color: #fff; }
+.flatpickr-months .flatpickr-month, .flatpickr-current-month input.cur-year,
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-weekday { color: var(--ink); fill: var(--ink); }
+.flatpickr-months .flatpickr-prev-month svg, .flatpickr-months .flatpickr-next-month svg { fill: var(--green-ink); }
 .form-note { grid-column: 1 / -1; color: var(--mint); font-weight: 700; font-size: 15px; margin: 0; }
 .form-note-err { color: #f0a58a; }
 .hp-field { display: none; }
