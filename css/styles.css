@@ -140,11 +140,15 @@ a { text-decoration: none; color: inherit; }
 }
 .hero-lede { margin: 20px 0 0; font-size: 18px; line-height: 1.6; color: var(--muted); max-width: 44ch; }
 
-/* Home hero: enlarge the left column so it balances the tall portrait photo */
-.hero .hero-title { font-size: clamp(44px, 6.2vw, 72px); }
-.hero .hero-lede { font-size: 19px; line-height: 1.62; max-width: 46ch; }
-.hero .btn-row { margin-top: 34px; }
-.hero .btn-row .btn { padding: 17px 34px; font-size: 17px; }
+/* Home hero: make the wording panel match the image in width AND height.
+   Columns are equal width (grid); stretch makes them equal height, and the
+   buttons anchor to the bottom so the wording fills the same footprint. */
+.hero { align-items: stretch; }
+.hero > div:first-child { display: flex; flex-direction: column; }
+.hero .hero-title { font-size: clamp(42px, 5.7vw, 64px); }
+.hero .hero-lede { font-size: 18px; line-height: 1.6; max-width: 46ch; }
+.hero .btn-row { margin-top: auto; }
+.hero .btn-row .btn { padding: 16px 32px; font-size: 16px; }
 
 /* Placeholder media boxes */
 .media-placeholder {
@@ -213,7 +217,7 @@ a { text-decoration: none; color: inherit; }
 .product { background: var(--card); border: 1.5px solid #ecddd0; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; }
 .product-media {
   position: relative; overflow: hidden;
-  aspect-ratio: 1 / 1; background: #eceee6; border-bottom: 2px dashed #ddcbbb;
+  aspect-ratio: 3 / 4; background: #eceee6;
   display: flex; align-items: center; justify-content: center; text-align: center; padding: 12px;
   color: #a08a76; font-weight: 700; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
 }
@@ -349,7 +353,7 @@ a { text-decoration: none; color: inherit; }
 
 .summary-lines { display: flex; flex-direction: column; gap: 14px; }
 .summary-item { display: flex; gap: 12px; align-items: center; }
-.summary-thumb { width: 46px; height: 46px; flex: none; border-radius: 12px; background: #eceee6; border: 2px dashed #cfd6c8; position: relative; overflow: hidden; }
+.summary-thumb { width: 46px; aspect-ratio: 3 / 4; flex: none; border-radius: 12px; background: #eceee6; border: 2px dashed #cfd6c8; position: relative; overflow: hidden; }
 
 /* Real photo inside a cart / summary thumbnail */
 .drawer-thumb.has-img, .summary-thumb.has-img { border-style: solid; border-color: var(--line); }
@@ -419,7 +423,7 @@ a { text-decoration: none; color: inherit; }
 .drawer-empty span { font-weight: 400; font-size: 14px; }
 .drawer-items { display: flex; flex-direction: column; gap: 16px; }
 .drawer-item { display: flex; gap: 13px; align-items: center; background: var(--card); border: 1.5px solid var(--line); border-radius: 16px; padding: 12px; }
-.drawer-thumb { width: 52px; height: 52px; flex: none; border-radius: 12px; background: #eceee6; border: 2px dashed #cfd6c8; position: relative; overflow: hidden; }
+.drawer-thumb { width: 52px; aspect-ratio: 3 / 4; flex: none; border-radius: 12px; background: #eceee6; border: 2px dashed #cfd6c8; position: relative; overflow: hidden; }
 .drawer-item-info { flex: 1; min-width: 0; }
 .drawer-item-name { display: block; font-weight: 800; font-size: 14px; color: var(--ink); }
 .drawer-item-price { font-size: 13px; color: var(--muted-3); }
