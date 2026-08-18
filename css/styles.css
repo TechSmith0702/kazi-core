@@ -140,8 +140,11 @@ a { text-decoration: none; color: inherit; }
 }
 .hero-lede { margin: 20px 0 0; font-size: 18px; line-height: 1.6; color: var(--muted); max-width: 44ch; }
 
-/* Home hero: centered layout with a slightly larger heading. */
-.hero { align-items: center; }
+/* Home hero: wording and photo share the same box size — photo fills its
+   column (equal width), stretch makes the columns equal height, and the
+   wording is centered within its box. */
+.hero { align-items: stretch; }
+.hero > div:first-child { display: flex; flex-direction: column; justify-content: center; }
 .hero .hero-title { font-size: clamp(44px, 5.7vw, 66px); }
 .hero .hero-lede { font-size: 19px; line-height: 1.6; max-width: 46ch; }
 .hero .btn-row { margin-top: 32px; }
@@ -158,8 +161,10 @@ a { text-decoration: none; color: inherit; }
 .hero-photo { aspect-ratio: 5 / 4; border-radius: 32px; overflow: hidden; box-shadow: 0 18px 40px rgba(43,63,52,.14); }
 .hero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 /* Portrait hero (matches a 3:4 photo so nothing is cropped) */
-/* Hero photo: 3:4 so the full photo fits with nothing cut off and no blur. */
-.hero-photo-portrait { aspect-ratio: 3 / 4; max-width: 430px; margin-inline: auto; }
+/* Hero photo: cropped to a wider shape (blanket edges trimmed, all bottles
+   kept) so it fills the column and matches the wording's box — no crop of
+   the bottles, no blur. */
+.hero-photo-portrait { aspect-ratio: 1200 / 1150; width: 100%; }
 .media-hero-alt { background: #e0e6da; border-color: #b3c0ac; color: #7f8d78; }
 .ph-label { font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
 .ph-hint { font-size: 13px; max-width: 26ch; }
