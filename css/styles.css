@@ -140,14 +140,11 @@ a { text-decoration: none; color: inherit; }
 }
 .hero-lede { margin: 20px 0 0; font-size: 18px; line-height: 1.6; color: var(--muted); max-width: 44ch; }
 
-/* Home hero: make the wording panel match the image in width AND height.
-   Columns are equal width (grid); stretch makes them equal height, and the
-   buttons anchor to the bottom so the wording fills the same footprint. */
-.hero { align-items: stretch; }
-.hero > div:first-child { display: flex; flex-direction: column; }
-.hero .hero-title { font-size: clamp(42px, 5.7vw, 64px); }
-.hero .hero-lede { font-size: 18px; line-height: 1.6; max-width: 46ch; }
-.hero .btn-row { margin-top: auto; }
+/* Home hero: centered layout with a slightly larger heading. */
+.hero { align-items: center; }
+.hero .hero-title { font-size: clamp(44px, 5.7vw, 66px); }
+.hero .hero-lede { font-size: 19px; line-height: 1.6; max-width: 46ch; }
+.hero .btn-row { margin-top: 32px; }
 .hero .btn-row .btn { padding: 16px 32px; font-size: 16px; }
 
 /* Placeholder media boxes */
@@ -161,9 +158,8 @@ a { text-decoration: none; color: inherit; }
 .hero-photo { aspect-ratio: 5 / 4; border-radius: 32px; overflow: hidden; box-shadow: 0 18px 40px rgba(43,63,52,.14); }
 .hero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 /* Portrait hero (matches a 3:4 photo so nothing is cropped) */
-/* Fill the column so the image box matches the text-column width.
-   Stays 3:4 to match the photo exactly, so all four bottles show uncropped. */
-.hero-photo-portrait { aspect-ratio: 3 / 4; width: 100%; }
+/* Hero photo: 3:4 so the full photo fits with nothing cut off and no blur. */
+.hero-photo-portrait { aspect-ratio: 3 / 4; max-width: 430px; margin-inline: auto; }
 .media-hero-alt { background: #e0e6da; border-color: #b3c0ac; color: #7f8d78; }
 .ph-label { font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
 .ph-hint { font-size: 13px; max-width: 26ch; }
@@ -436,7 +432,8 @@ a { text-decoration: none; color: inherit; }
 
 /* ---------- Responsive tweaks ---------- */
 @media (max-width: 720px) {
-  .hero { padding-top: 40px; gap: 32px; }
+  .hero { padding-top: 40px; gap: 32px; grid-template-columns: 1fr; }
+  .hero-photo-portrait { height: auto; width: 100%; }
   .main-nav { width: 100%; justify-content: flex-start; }
   .brand { margin-right: 0; }
   .section-pad { padding-top: 40px; }
