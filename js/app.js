@@ -281,6 +281,43 @@
     el.hidden = false;
   }
 
+  // ---------- Delivery distance ----------
+  const isLocalHost = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  // Eastleigh — LOCAL TESTING ONLY. In production the hidden server function
+  // (delivery-quote, origin from env vars) is authoritative and this is unused.
+  const TEST_ORIGIN = { lat: -26.1328, lng: 28.1602 };
+
+  function haversineKm(la1, lo1, la2, lo2) {
+    const R = 6371, toRad = (d) => (d * Math.PI) / 180;
+    const dLa = toRad(la2 - la1), dLo = toRad(lo2 - lo1);
+    const a = Math.sin(dLa / 2) ** 2 + Math.cos(toRad(la1)) * Math.cos(toRad(la2)) * Math.sin(dLo / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  // Local/testing geocode via OpenStreetMap Nominatim (free, no key).
+  function localGeocodeQuote(addr) {
+    const q = [addr.street, addr.suburb, addr.city, addr.postal, 'South Africa'].filter(Boolean).join(', ');
+    return fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=' + encodeURIComponent(q))
+      .then((r) => r.json())
+      .then((list) => {
+        if (!Array.isArray(list) || !list.length) return { configured: true, resolved: false };
+        const km = haversineKm(TEST_ORIGIN.lat, TEST_ORIGIN.lng, parseFloat(list[0].lat), parseFloat(list[0].lon));
+        const within = km <= 10;
+        return { configured: true, resolved: true, km: Math.round(km * 10) / 10, within: within, fee: within ? 0 : DELIVERY_FAR_CENTS };
+      });
+  }
+
+  // Prefer the deployed server function (hidden origin); on localhost fall
+  // back to client-side geocoding so it's testable without deploying.
+  function quoteDelivery(addr) {
+    return fetch('/.netlify/functions/delivery-quote', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addr)
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('fn ' + r.status))))
+      .then((d) => ((d && d.configured === false && isLocalHost) ? localGeocodeQuote(addr) : d))
+      .catch(() => { if (isLocalHost) return localGeocodeQuote(addr); throw new Error('unavailable'); });
+  }
+
   // Split a full name into first / last for Payfast
   function splitName(full) {
     var parts = (full || '').trim().split(/\s+/);
@@ -411,10 +448,7 @@
         if (!addr.street || !addr.city) { setDeliveryResult('Please enter your delivery address above first.', 'warn'); return; }
         setDeliveryResult('Checking distance…', 'info');
         calcBtn.disabled = true;
-        fetch('/.netlify/functions/delivery-quote', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addr)
-        })
-          .then((r) => (r.ok ? r.json() : Promise.reject(new Error('http ' + r.status))))
+        quoteDelivery(addr)
           .then((data) => {
             if (!data || data.configured === false) throw new Error('not configured');
             if (data.resolved === false) { setDeliveryResult('We couldn\'t locate that address — please double-check it.', 'warn'); return; }

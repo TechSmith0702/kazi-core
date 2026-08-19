@@ -5,17 +5,15 @@
    DELIVERY_FEE_CENTS. The customer never chooses — the distance is
    measured — so the fee can't be gamed.
 
-   The business ORIGIN (Eastleigh) and the Google key live ONLY in
-   Netlify environment variables — never in this repo, never shown
-   to visitors. Env vars:
-     GOOGLE_MAPS_KEY        Google Geocoding API key
-     DELIVERY_ORIGIN_LAT    origin latitude  (e.g. -26.1408)
-     DELIVERY_ORIGIN_LNG    origin longitude (e.g.  28.1553)
+   Geocoding uses OpenStreetMap Nominatim (free, no API key, no card).
+   The business ORIGIN (Eastleigh) lives ONLY in Netlify environment
+   variables — never in this repo, never shown to visitors. Env vars:
+     DELIVERY_ORIGIN_LAT    origin latitude  (e.g. -26.1328)
+     DELIVERY_ORIGIN_LNG    origin longitude (e.g.  28.1602)
      DELIVERY_RADIUS_KM     free radius, default 10
      DELIVERY_FEE_CENTS     fee beyond radius, default 12000 (R120)
    ============================================================ */
 
-const KEY = process.env.GOOGLE_MAPS_KEY || '';
 const ORIGIN_LAT = parseFloat(process.env.DELIVERY_ORIGIN_LAT);
 const ORIGIN_LNG = parseFloat(process.env.DELIVERY_ORIGIN_LNG);
 const RADIUS_KM = parseFloat(process.env.DELIVERY_RADIUS_KM || '10');
@@ -38,8 +36,8 @@ function haversineKm(la1, lo1, la2, lo2) {
 exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') return json(405, { error: 'Method not allowed' });
 
-  // Not set up yet → tell the client to fall back gracefully.
-  if (!KEY || isNaN(ORIGIN_LAT) || isNaN(ORIGIN_LNG)) return json(200, { configured: false });
+  // Origin not set yet → tell the client to fall back gracefully.
+  if (isNaN(ORIGIN_LAT) || isNaN(ORIGIN_LNG)) return json(200, { configured: false });
 
   const raw = event.isBase64Encoded ? Buffer.from(event.body || '', 'base64').toString('utf8') : (event.body || '');
   let a;
@@ -49,15 +47,15 @@ exports.handler = async function (event) {
   if (parts.length < 2) return json(400, { error: 'Address required' });
 
   try {
-    const url = 'https://maps.googleapis.com/maps/api/geocode/json?region=za&address=' +
-      encodeURIComponent(parts.join(', ')) + '&key=' + KEY;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.status !== 'OK' || !data.results || !data.results.length) {
+    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=' +
+      encodeURIComponent(parts.join(', '));
+    // Nominatim's usage policy asks for a descriptive User-Agent.
+    const res = await fetch(url, { headers: { 'User-Agent': 'KaziCore-Delivery/1.0 (kazicore.netlify.app)' } });
+    const list = await res.json();
+    if (!Array.isArray(list) || !list.length) {
       return json(200, { configured: true, resolved: false });
     }
-    const loc = data.results[0].geometry.location;
-    const km = haversineKm(ORIGIN_LAT, ORIGIN_LNG, loc.lat, loc.lng);
+    const km = haversineKm(ORIGIN_LAT, ORIGIN_LNG, parseFloat(list[0].lat), parseFloat(list[0].lon));
     const within = km <= RADIUS_KM;
     return json(200, { configured: true, resolved: true, km: Math.round(km * 10) / 10, within: within, fee: within ? 0 : FEE_CENTS });
   } catch (e) {
