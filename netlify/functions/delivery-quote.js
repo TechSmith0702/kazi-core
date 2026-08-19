@@ -42,22 +42,33 @@ exports.handler = async function (event) {
   const raw = event.isBase64Encoded ? Buffer.from(event.body || '', 'base64').toString('utf8') : (event.body || '');
   let a;
   try { a = JSON.parse(raw || '{}'); } catch (e) { return json(400, { error: 'Bad request' }); }
+  if (!a.city && !a.postal && !a.suburb) return json(400, { error: 'Address required' });
 
-  const parts = [a.street, a.suburb, a.city, a.postal, 'South Africa'].filter(Boolean);
-  if (parts.length < 2) return json(400, { error: 'Address required' });
+  // Progressively broader queries — use the most specific one Nominatim can
+  // resolve (house numbers / some suburbs are missing from free map data).
+  const CO = 'South Africa';
+  const j = (...p) => p.filter(Boolean).join(', ');
+  const queries = [
+    j(a.suburb, a.city, a.postal, CO),
+    j(a.city, a.postal, CO),
+    j(a.suburb, a.city, CO),
+    j(a.postal, CO),
+    j(a.city, CO)
+  ].filter((s, i, arr) => s && s !== CO && arr.indexOf(s) === i);
 
   try {
-    const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=' +
-      encodeURIComponent(parts.join(', '));
-    // Nominatim's usage policy asks for a descriptive User-Agent.
-    const res = await fetch(url, { headers: { 'User-Agent': 'KaziCore-Delivery/1.0 (kazicore.netlify.app)' } });
-    const list = await res.json();
-    if (!Array.isArray(list) || !list.length) {
-      return json(200, { configured: true, resolved: false });
+    for (const q of queries) {
+      const url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=' + encodeURIComponent(q);
+      // Nominatim's usage policy asks for a descriptive User-Agent.
+      const res = await fetch(url, { headers: { 'User-Agent': 'KaziCore-Delivery/1.0 (kazicore.netlify.app)' } });
+      const list = await res.json();
+      if (Array.isArray(list) && list.length) {
+        const km = haversineKm(ORIGIN_LAT, ORIGIN_LNG, parseFloat(list[0].lat), parseFloat(list[0].lon));
+        const within = km <= RADIUS_KM;
+        return json(200, { configured: true, resolved: true, km: Math.round(km * 10) / 10, within: within, fee: within ? 0 : FEE_CENTS });
+      }
     }
-    const km = haversineKm(ORIGIN_LAT, ORIGIN_LNG, parseFloat(list[0].lat), parseFloat(list[0].lon));
-    const within = km <= RADIUS_KM;
-    return json(200, { configured: true, resolved: true, km: Math.round(km * 10) / 10, within: within, fee: within ? 0 : FEE_CENTS });
+    return json(200, { configured: true, resolved: false });
   } catch (e) {
     console.error('[delivery-quote]', e);
     return json(502, { error: 'Geocoding failed' });

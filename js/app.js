@@ -294,17 +294,43 @@
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
-  // Local/testing geocode via OpenStreetMap Nominatim (free, no key).
-  function localGeocodeQuote(addr) {
-    const q = [addr.street, addr.suburb, addr.city, addr.postal, 'South Africa'].filter(Boolean).join(', ');
+  // Progressively broader address queries — use the most specific that a
+  // free geocoder can actually resolve (house numbers/suburbs are patchy).
+  function addressQueries(a) {
+    const CO = 'South Africa';
+    const j = (...p) => p.filter(Boolean).join(', ');
+    // House numbers / many suburbs are missing from free map data, so we
+    // resolve at suburb/city/postal level (plenty precise for a 10km check)
+    // and skip the street line — it usually fails and just adds delay.
+    const list = [
+      j(a.suburb, a.city, a.postal, CO),
+      j(a.city, a.postal, CO),
+      j(a.suburb, a.city, CO),
+      j(a.postal, CO),
+      j(a.city, CO)
+    ].filter((s) => s && s !== CO);
+    return list.filter((s, i) => list.indexOf(s) === i);
+  }
+
+  function nominatimGeocode(q) {
     return fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=' + encodeURIComponent(q))
       .then((r) => r.json())
-      .then((list) => {
-        if (!Array.isArray(list) || !list.length) return { configured: true, resolved: false };
-        const km = haversineKm(TEST_ORIGIN.lat, TEST_ORIGIN.lng, parseFloat(list[0].lat), parseFloat(list[0].lon));
+      .then((list) => (Array.isArray(list) && list.length ? { lat: parseFloat(list[0].lat), lng: parseFloat(list[0].lon) } : null))
+      .catch(() => null);
+  }
+
+  // Local/testing geocode via OpenStreetMap Nominatim (free, no key), trying
+  // progressively broader queries until one resolves.
+  async function localGeocodeQuote(addr) {
+    for (const q of addressQueries(addr)) {
+      const loc = await nominatimGeocode(q);
+      if (loc) {
+        const km = haversineKm(TEST_ORIGIN.lat, TEST_ORIGIN.lng, loc.lat, loc.lng);
         const within = km <= 10;
         return { configured: true, resolved: true, km: Math.round(km * 10) / 10, within: within, fee: within ? 0 : DELIVERY_FAR_CENTS };
-      });
+      }
+    }
+    return { configured: true, resolved: false };
   }
 
   // Prefer the deployed server function (hidden origin); on localhost fall
