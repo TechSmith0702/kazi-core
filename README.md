@@ -34,7 +34,9 @@ everything works except it's nicer to develop with live reload.
 ## Easy things to change
 - **Products / prices** — edit the `PRODUCTS` array at the top of `js/app.js`.
   Prices are in cents (e.g. `4999` = R49.99).
-- **Delivery fee** — `DELIVERY_CENTS` in `js/app.js` (currently R60).
+- **Delivery fee** — courier: free within 10km, `DELIVERY_FAR_CENTS` (R120) beyond. The
+  customer picks their zone at checkout. Change the amount in `js/app.js` (and keep
+  `netlify/functions/payfast-sign.js` in sync).
 - **Colours** — the `:root { --green … }` block at the top of `css/styles.css`.
 - **Contact details / social links** — the footer in `index.html`.
 

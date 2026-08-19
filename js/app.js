@@ -21,7 +21,7 @@
     { id: 'br', name: 'Botanical Rose', cat: 'Body Mist', price: 6500, blurb: 'Botanical rose body mist. 100 ml.', image: 'assets/products/botanical-rose.jpg', available: true },
   ];
 
-  const DELIVERY_CENTS = 6000; // R60 flat delivery when cart has items
+  const DELIVERY_FAR_CENTS = 12000; // R120 courier fee beyond a 10km radius (free within)
   const CART_KEY = 'kazi-cart';
   const PAGES = ['home', 'services', 'shop', 'checkout'];
   // Bump this whenever a product photo is replaced (same filename) so
@@ -35,6 +35,8 @@
   let filters = { 'Linen Spray': true, 'Body Mist': true };
   let sort = 'featured';
   let priceCap = Infinity;        // max price (Rand) from the slider
+  let deliveryFar = false;        // true = beyond 10km (R120), false = within 10km (free)
+  const deliveryCents = () => (deliveryFar ? DELIVERY_FAR_CENTS : 0);
 
   /* ---------- Helpers ---------- */
   const $ = (sel, root) => (root || document).querySelector(sel);
@@ -264,9 +266,10 @@
     });
 
     const sub = subtotal();
+    const delivery = deliveryCents();
     $('#sumSubtotal').textContent = money(sub);
-    $('#sumDelivery').textContent = money(DELIVERY_CENTS);
-    $('#sumTotal').textContent = money(sub + DELIVERY_CENTS);
+    $('#sumDelivery').textContent = delivery ? money(delivery) : 'Free';
+    $('#sumTotal').textContent = money(sub + delivery);
   }
 
   // Split a full name into first / last for Payfast
@@ -296,6 +299,7 @@
       $('#payError').hidden = true;
       var result = window.KaziPayfast.checkout({
         cart: cart,
+        deliveryFar: deliveryFar,
         firstName: nm.first,
         lastName: nm.last,
         email: (document.querySelector('[name="c-email"]') || {}).value || '',
@@ -387,6 +391,14 @@
         renderShop();
       });
     }
+
+    // Delivery zone → free within 10km, R120 beyond
+    $$('input[name="delivery"]').forEach((r) => {
+      r.addEventListener('change', (e) => {
+        deliveryFar = e.target.value === 'far';
+        renderCheckout();
+      });
+    });
 
     // Checkout
     $('#placeOrder').addEventListener('click', placeOrder);

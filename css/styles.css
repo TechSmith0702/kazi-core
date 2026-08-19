@@ -356,6 +356,7 @@ a { text-decoration: none; color: inherit; }
 .pay-option:last-child { margin-bottom: 0; }
 .pay-option input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--green); cursor: pointer; }
 .pay-option span { display: flex; flex-direction: column; gap: 3px; }
+.delivery-note { font-size: 13px; color: var(--muted-2); margin: 0 0 14px; }
 .pay-name { font-weight: 800; color: var(--ink); }
 .pay-sub { font-size: 13px; color: var(--muted-3); }
 

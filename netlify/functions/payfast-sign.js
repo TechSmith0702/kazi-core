@@ -32,7 +32,7 @@ const PRODUCTS = {
   sv: { name: 'Sweet Vanilla', price: 6500 },
   br: { name: 'Botanical Rose', price: 6500 }
 };
-const DELIVERY_CENTS = 6000;
+const DELIVERY_FAR_CENTS = 12000; // R120 beyond 10km; free within
 
 // PHP-style urlencoding (spaces -> '+', uppercase hex) to match Payfast.
 function pfEncode(v) {
@@ -71,7 +71,7 @@ exports.handler = async function (event) {
     if (p && q) { cents += p.price * q; count += q; }
   });
   if (count === 0) return json(400, { error: 'Cart is empty' });
-  cents += DELIVERY_CENTS;
+  if (data.deliveryFar) cents += DELIVERY_FAR_CENTS; // free within 10km
   var amount = (cents / 100).toFixed(2);
 
   // Where Payfast redirects the customer back to.

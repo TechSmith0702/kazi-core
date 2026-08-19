@@ -68,6 +68,7 @@ window.KaziPayfast = (function () {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         cart: order.cart || {},
+        deliveryFar: !!order.deliveryFar,
         firstName: order.firstName || '',
         lastName: order.lastName || '',
         email: order.email || '',
