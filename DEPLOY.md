@@ -113,6 +113,33 @@ Notes:
 
 ---
 
+## D. Delivery fee by distance (Google Maps)
+
+Checkout works out the courier fee automatically: **free within 10 km** of the business,
+**R120 beyond**. The customer enters their address and clicks **"Calculate my delivery fee"**;
+the `delivery-quote` function measures the straight-line distance from the business origin
+(kept secret) and returns the fee. Until it's configured, the button shows a graceful
+"we'll confirm it" message and delivery defaults to free.
+
+To switch it on:
+1. **Create a Google Maps API key** — at [console.cloud.google.com](https://console.cloud.google.com):
+   new project → enable the **Geocoding API** → **Credentials → Create API key**. (Google's free
+   monthly allowance easily covers a small shop; a card is required on the account.)
+   Restrict the key to the **Geocoding API** for safety.
+2. **Add env vars in Netlify** (Site configuration → Environment variables):
+   - `GOOGLE_MAPS_KEY` — the key from step 1
+   - `DELIVERY_ORIGIN_LAT` / `DELIVERY_ORIGIN_LNG` — the business coordinates (Eastleigh).
+     Get them by searching the location on Google Maps and copying the lat,lng from the URL.
+     **These stay secret — the address is never shown on the site.**
+   - *(optional)* `DELIVERY_RADIUS_KM` (default 10), `DELIVERY_FEE_CENTS` (default 12000)
+3. **Redeploy.** Test at checkout with a near and a far address.
+
+> Anti-gaming note: for full protection, when card payments go live the `payfast-sign` function
+> should re-measure the distance from the address server-side (rather than trust the client's
+> result) before charging. Flagged to do during the payments go-live step.
+
+---
+
 ## Later (optional, nice to have)
 - **Order emails:** right now a completed payment is verified and logged. We can add a step in
   `payfast-notify.js` to email each order to `kazicoreholdings@gmail.com`.

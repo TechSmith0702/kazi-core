@@ -349,15 +349,9 @@
 
           <div class="panel-light">
             <h3 class="panel-light-title">Delivery</h3>
-            <p class="delivery-note">Delivered by courier — <strong>free within 10&nbsp;km</strong>, R120 beyond.</p>
-            <label class="pay-option">
-              <input type="radio" name="delivery" value="free" id="delivFree" checked>
-              <span><span class="pay-name">Within 10 km — Free</span><span class="pay-sub">Courier delivery at no charge</span></span>
-            </label>
-            <label class="pay-option">
-              <input type="radio" name="delivery" value="far" id="delivFar">
-              <span><span class="pay-name">Beyond 10 km — R120</span><span class="pay-sub">Courier fee for longer distances</span></span>
-            </label>
+            <p class="delivery-note">Delivered by courier — <strong>free within 10&nbsp;km</strong>, R120 beyond. We work out your fee automatically from the delivery address above.</p>
+            <button type="button" class="btn btn-outline-green" id="calcDelivery">Calculate my delivery fee</button>
+            <p class="delivery-result" id="deliveryResult" hidden></p>
           </div>
 
           <div class="panel-light">

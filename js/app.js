@@ -36,6 +36,7 @@
   let sort = 'featured';
   let priceCap = Infinity;        // max price (Rand) from the slider
   let deliveryFar = false;        // true = beyond 10km (R120), false = within 10km (free)
+  let deliveryDone = false;       // has the delivery fee been calculated from the address?
   const deliveryCents = () => (deliveryFar ? DELIVERY_FAR_CENTS : 0);
 
   /* ---------- Helpers ---------- */
@@ -272,6 +273,14 @@
     $('#sumTotal').textContent = money(sub + delivery);
   }
 
+  function setDeliveryResult(msg, kind) {
+    const el = $('#deliveryResult');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'delivery-result delivery-' + (kind || 'info');
+    el.hidden = false;
+  }
+
   // Split a full name into first / last for Payfast
   function splitName(full) {
     var parts = (full || '').trim().split(/\s+/);
@@ -392,13 +401,38 @@
       });
     }
 
-    // Delivery zone → free within 10km, R120 beyond
-    $$('input[name="delivery"]').forEach((r) => {
-      r.addEventListener('change', (e) => {
-        deliveryFar = e.target.value === 'far';
-        renderCheckout();
+    // Delivery fee — computed from the customer's address (free within 10km
+    // of us, R120 beyond) via the delivery-quote serverless function.
+    const calcBtn = $('#calcDelivery');
+    if (calcBtn) {
+      calcBtn.addEventListener('click', () => {
+        const v = (n) => ((document.querySelector('[name="' + n + '"]') || {}).value || '').trim();
+        const addr = { street: v('c-street'), suburb: v('c-suburb'), city: v('c-city'), postal: v('c-postal') };
+        if (!addr.street || !addr.city) { setDeliveryResult('Please enter your delivery address above first.', 'warn'); return; }
+        setDeliveryResult('Checking distance…', 'info');
+        calcBtn.disabled = true;
+        fetch('/.netlify/functions/delivery-quote', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addr)
+        })
+          .then((r) => (r.ok ? r.json() : Promise.reject(new Error('http ' + r.status))))
+          .then((data) => {
+            if (!data || data.configured === false) throw new Error('not configured');
+            if (data.resolved === false) { setDeliveryResult('We couldn\'t locate that address — please double-check it.', 'warn'); return; }
+            deliveryFar = !data.within;
+            deliveryDone = true;
+            const kmTxt = (data.km != null) ? ' (~' + data.km + ' km away)' : '';
+            setDeliveryResult(
+              data.within ? '✓ You\'re within 10 km' + kmTxt + ' — delivery is free.'
+                          : 'You\'re beyond 10 km' + kmTxt + ' — R120 delivery fee applies.',
+              data.within ? 'ok' : 'warn');
+            renderCheckout();
+          })
+          .catch(() => {
+            setDeliveryResult('We couldn\'t work it out just now — Kazi Core will confirm your delivery fee from the address you gave.', 'info');
+          })
+          .finally(() => { calcBtn.disabled = false; });
       });
-    });
+    }
 
     // Checkout
     $('#placeOrder').addEventListener('click', placeOrder);
