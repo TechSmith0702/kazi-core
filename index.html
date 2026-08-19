@@ -12,7 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
-  <link rel="stylesheet" href="css/vendor/flatpickr.min.css">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -48,7 +47,7 @@
       <div>
         <span class="eyebrow eyebrow-soft">Kazi Core Holdings (Pty) Ltd</span>
         <h1 class="hero-title">A fresher home &amp; workplace, from people who care.</h1>
-        <p class="hero-lede">Two divisions, one promise. <strong class="txt-green">Kazi Kleen</strong> handles the cleaning; <strong class="txt-terra">Essentials</strong> stocks the detergents &amp; fragrances to keep it that way.</p>
+        <p class="hero-lede">Two divisions, one promise. <strong class="txt-green">Kazi Kleen</strong> handles the cleaning; <strong class="txt-terra">Essentials</strong> stocks the linen sprays &amp; body mists to keep it that way.</p>
         <div class="btn-row">
           <button class="btn btn-green" data-nav="services" type="button">Book a clean</button>
           <button class="btn btn-outline-terra" data-nav="shop" type="button">Shop Essentials</button>
@@ -256,18 +255,18 @@
           <label class="field field-dark">Contact number<input name="phone" placeholder="0__ ___ ____" inputmode="tel" autocomplete="tel" data-phone required></label>
           <label class="field field-dark">Email<input type="email" name="email" placeholder="you@email.co.za" autocomplete="email" required></label>
           <label class="field field-dark">Service
-            <select name="service">
+            <select name="service" required>
+              <option value="" disabled selected>Please Select Service</option>
               <option>Home cleaning</option>
               <option>Office &amp; commercial</option>
               <option>Deep clean</option>
               <option>Move in / move out</option>
             </select>
           </label>
-          <label class="field field-dark">Preferred date<input type="text" name="date" id="bookingDate" placeholder="dd/mm/yyyy" autocomplete="off" required><span class="field-hint">Tap to pick a date — at least a week from today.</span></label>
           <label class="field field-dark field-full">Street address<input name="street" placeholder="e.g. 12 Main Road" autocomplete="address-line1" required></label>
           <label class="field field-dark">Suburb / area<input name="suburb" placeholder="e.g. Rosebank" autocomplete="address-line2" required></label>
           <label class="field field-dark">City / town<input name="city" placeholder="e.g. Johannesburg" autocomplete="address-level2" required></label>
-          <label class="field field-dark">Postal code<input name="postal" placeholder="e.g. 2196" autocomplete="postal-code" inputmode="numeric"></label>
+          <label class="field field-dark">Postal code<input name="postal" placeholder="e.g. 2196" autocomplete="postal-code" inputmode="numeric" required></label>
           <button class="btn btn-mint field-full" type="submit">Send booking request</button>
           <p class="form-note" id="bookingNote" hidden>✓ Thanks! Your booking request has been received — we'll be in touch shortly.</p>
           <p class="form-note form-note-err" id="bookingErr" hidden>Sorry — we couldn't send that just now. Please try again, or call us on 063&nbsp;490&nbsp;2590.</p>
@@ -459,7 +458,6 @@
     </div>
   </aside>
 
-  <script src="js/vendor/flatpickr.min.js"></script>
   <script src="js/payfast.js"></script>
   <script src="js/app.js"></script>
 </body>
