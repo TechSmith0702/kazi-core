@@ -381,6 +381,19 @@
     return lines.join('\n');
   }
 
+  // Build a pre-filled WhatsApp message from the quote-request form.
+  function whatsappQuoteText(form) {
+    const v = (n) => ((form.querySelector('[name="' + n + '"]') || {}).value || '').trim();
+    const lines = ["Hi Kazi Core! I'd like a cleaning quote:", ''];
+    if (v('service')) lines.push('Service: ' + v('service'));
+    if (v('name')) lines.push('Name: ' + v('name'));
+    if (v('phone')) lines.push('Phone: ' + v('phone'));
+    if (v('email')) lines.push('Email: ' + v('email'));
+    const addr = ['street', 'suburb', 'city', 'postal'].map(v).filter(Boolean).join(', ');
+    if (addr) lines.push('Address: ' + addr);
+    return lines.join('\n');
+  }
+
   function placeOrder() {
     if (cartCount() === 0) return;
 
@@ -536,6 +549,9 @@
       const form = e.target;
       $('#bookingNote').hidden = true;
       $('#bookingErr').hidden = true;
+      // Also open WhatsApp with the request pre-filled (done first, inside the
+      // click gesture, so pop-up blockers allow it). Email still sends below.
+      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(whatsappQuoteText(form)), '_blank');
       const body = new URLSearchParams(new FormData(form)).toString();
       fetch('/', {
         method: 'POST',
