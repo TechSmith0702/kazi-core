@@ -456,6 +456,10 @@
 
   /* ---------- Wire up events ---------- */
   function init() {
+    // Point the floating WhatsApp button at WA_NUMBER (single source of truth)
+    var waFloat = document.getElementById('waFloat');
+    if (waFloat) waFloat.href = 'https://wa.me/' + WA_NUMBER;
+
     // Nav / any element with data-nav
     document.body.addEventListener('click', (e) => {
       const navEl = e.target.closest('[data-nav]');
