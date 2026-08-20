@@ -454,12 +454,6 @@
     }
   }
 
-  /* ---------- Phone formatting (0__ ___ ____) ---------- */
-  function formatPhone(v) {
-    const d = v.replace(/\D/g, '').slice(0, 10);
-    return [d.slice(0, 3), d.slice(3, 6), d.slice(6, 10)].filter(Boolean).join(' ');
-  }
-
   /* ---------- Wire up events ---------- */
   function init() {
     // Nav / any element with data-nav
@@ -567,11 +561,6 @@
           console.error('[booking]', err);
           $('#bookingErr').hidden = false;
         });
-    });
-
-    // Live phone formatting on any [data-phone] input
-    $$('[data-phone]').forEach((input) => {
-      input.addEventListener('input', (e) => { e.target.value = formatPhone(e.target.value); });
     });
 
 

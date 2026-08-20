@@ -248,7 +248,7 @@
           <input type="hidden" name="form-name" value="booking">
           <p class="hp-field"><label>Leave this field empty <input name="bot-field"></label></p>
           <label class="field field-dark">Full name<input name="name" placeholder="Your name" autocomplete="name" required></label>
-          <label class="field field-dark">Contact number<input name="phone" placeholder="0__ ___ ____" inputmode="tel" autocomplete="tel" data-phone required></label>
+          <label class="field field-dark">Contact number<input name="phone" inputmode="tel" autocomplete="tel" pattern="0[0-9]{9}|\+27[0-9]{9}" title="Enter a 10-digit number (e.g. 0821234567), or +27 followed by 9 digits" required></label>
           <label class="field field-dark">Email<input type="email" name="email" placeholder="you@email.co.za" autocomplete="email" required></label>
           <label class="field field-dark">Service
             <select name="service" required>
@@ -335,7 +335,7 @@
             <h3 class="panel-light-title">Your details</h3>
             <div class="form-grid">
               <label class="field">Full name<input name="c-name" placeholder="e.g. Thando Smith" autocomplete="name"></label>
-              <label class="field">Contact number<input name="c-phone" placeholder="0__ ___ ____" inputmode="tel" autocomplete="tel" data-phone></label>
+              <label class="field">Contact number<input name="c-phone" inputmode="tel" autocomplete="tel" pattern="0[0-9]{9}|\+27[0-9]{9}" title="Enter a 10-digit number (e.g. 0821234567), or +27 followed by 9 digits"></label>
               <label class="field">Email<input type="email" name="c-email" placeholder="you@email.co.za" autocomplete="email"></label>
               <label class="field">Delivery address<input name="c-street" placeholder="e.g. 12 Main Road" autocomplete="address-line1"></label>
               <label class="field">Suburb / area<input name="c-suburb" placeholder="e.g. Rosebank" autocomplete="address-line2"></label>
