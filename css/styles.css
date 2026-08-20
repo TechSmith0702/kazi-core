@@ -447,6 +447,19 @@ a { text-decoration: none; color: inherit; }
 .drawer-foot .summary-row.total { margin-bottom: 14px; }
 .drawer-foot .summary-row.total span:last-child { font-family: var(--head); }
 
+/* ---------- Floating WhatsApp button ---------- */
+.wa-float {
+  position: fixed; right: 22px; bottom: 22px; z-index: 35;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: #25d366; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.wa-float:hover { transform: scale(1.08); box-shadow: 0 10px 24px rgba(0, 0, 0, .32); }
+.wa-float:active { transform: scale(1.02); }
+@media (max-width: 600px) { .wa-float { right: 16px; bottom: 16px; width: 52px; height: 52px; } }
+
 /* ---------- Responsive tweaks ---------- */
 @media (max-width: 720px) {
   .hero { padding-top: 40px; gap: 32px; grid-template-columns: 1fr; }

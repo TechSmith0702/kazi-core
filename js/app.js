@@ -22,6 +22,7 @@
   ];
 
   const DELIVERY_FAR_CENTS = 12000; // R120 courier fee beyond a 10km radius (free within)
+  const WA_NUMBER = '27634902590';  // WhatsApp: 063 490 2590 in international format
   const CART_KEY = 'kazi-cart';
   const PAGES = ['home', 'services', 'shop', 'checkout'];
   // Bump this whenever a product photo is replaced (same filename) so
@@ -74,7 +75,7 @@
     page = target;
     // Clear transient checkout banners so "Order confirmed" only shows right
     // after Place order (and disappears on Back to home / Keep shopping).
-    ['#confirmBlock', '#payDemo', '#payCancelled', '#payError'].forEach((sel) => {
+    ['#confirmBlock', '#payDemo', '#payCancelled', '#payError', '#payEftMsg'].forEach((sel) => {
       const el = $(sel); if (el) el.hidden = true;
     });
     PAGES.forEach((p) => {
@@ -359,10 +360,39 @@
     $('#confirmBlock').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  // Build a pre-filled WhatsApp message summarising the order (for EFT).
+  function whatsappOrderText() {
+    const lines = ["Hi Kazi Core! I'd like to place an order and pay by EFT:", ''];
+    Object.keys(cart).forEach((id) => {
+      const p = byId(id);
+      if (p) lines.push('• ' + cart[id] + '× ' + p.name + ' — ' + money(p.price * cart[id]));
+    });
+    const sub = subtotal();
+    const delivery = deliveryCents();
+    lines.push('');
+    lines.push('Subtotal: ' + money(sub));
+    lines.push('Delivery: ' + (delivery ? money(delivery) : (deliveryDone ? 'Free' : 'to be confirmed')));
+    lines.push('Total: ' + money(sub + delivery));
+    const val = (n) => ((document.querySelector('[name="' + n + '"]') || {}).value || '').trim();
+    const name = val('c-name');
+    if (name) { lines.push(''); lines.push('Name: ' + name); }
+    const addr = ['c-street', 'c-suburb', 'c-city', 'c-postal'].map(val).filter(Boolean).join(', ');
+    if (addr) lines.push('Address: ' + addr);
+    return lines.join('\n');
+  }
+
   function placeOrder() {
     if (cartCount() === 0) return;
 
     var method = (document.querySelector('input[name="pay"]:checked') || {}).value;
+
+    if (method === 'eft') {
+      // Open WhatsApp with the order pre-filled so they can arrange EFT.
+      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(whatsappOrderText()), '_blank');
+      $('#payEftMsg').hidden = false;
+      $('#payEftMsg').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
     if (method === 'card' && window.KaziPayfast) {
       // Hand off to Payfast. On return, the ?payment= handler in init()
