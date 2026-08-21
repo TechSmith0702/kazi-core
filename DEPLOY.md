@@ -113,31 +113,28 @@ Notes:
 
 ---
 
-## D. Delivery fee by distance (free — no API key)
+## D. Delivery fee by zone (free — no API key)
 
-Checkout works out the courier fee automatically: **free within 10 km** of the business,
-**R120 beyond**. The customer enters their address and clicks **"Calculate my delivery fee"**;
-the `delivery-quote` function measures the straight-line distance from the business origin
-(kept secret) and returns the fee. Geocoding uses **OpenStreetMap Nominatim** — free, **no API
-key, no credit card**. Until the origin is set, the button shows a graceful "we'll confirm it"
-message and delivery defaults to free.
+Checkout works out the courier fee from a **free-delivery zone list**: **free** if the customer's
+suburb is on the list (all measured to be within ~10 km of the business), **R120** otherwise.
+The customer enters their suburb, clicks **"Check my delivery fee"**, and it's matched instantly
+against the list — **no geocoding, no API, no key, no card, nothing to dispute.**
 
-To switch it on (no Google account needed):
-1. **Add env vars in Netlify** (Site configuration → Environment variables):
-   - `DELIVERY_ORIGIN_LAT` / `DELIVERY_ORIGIN_LNG` — the business coordinates.
-     Eastleigh ≈ **-26.1328, 28.1602** (refine by right-clicking the exact spot in Google Maps →
-     the lat,lng shows at the top). **These stay secret — the address is never shown on the site.**
-   - *(optional)* `DELIVERY_RADIUS_KM` (default 10), `DELIVERY_FEE_CENTS` (default 12000)
-2. **Redeploy.** Test at checkout with a near and a far address.
+Why a list instead of live distance: free SA map data is patchy and mis-locates some suburbs
+(e.g. it put Sebenza and Modderfontein 60+ km away when they're ~2–7 km). A curated list — measured
+once and human-checked — is accurate, instant, and can't be gamed by the customer.
 
-Notes:
-- **Local testing:** on `localhost` the checkout geocodes client-side (via Nominatim) using a
-  test origin in `js/app.js`, so it works without deploying. In production the hidden server
-  function is used instead.
-- Nominatim is fine for a small shop's volume; if you ever want pinpoint accuracy you can swap in
-  Google's Geocoding API later (needs a key + card).
-- Anti-gaming note: when card payments go live, `payfast-sign` should re-measure the distance
-  server-side (rather than trust the client) before charging. Flagged for the payments go-live step.
+The list lives in `js/app.js` as `FREE_SUBURBS`. To change it:
+1. Edit the `FREE_SUBURBS` array (names match loosely — case / spaces / punctuation ignored).
+2. Redeploy. That's it — no env vars.
+
+**Henny approves the zone.** Borderline suburbs (10–13 km: Germiston, Sandton, Birchleigh,
+Lambton, Morningside, Observatory) are currently **off** the list (charged R120) until she opts
+them in. See the "Free-delivery zone" sheet sent for sign-off.
+
+Anti-gaming note: when card payments go live, `payfast-sign` should re-check the suburb against
+the same `FREE_SUBURBS` list server-side (rather than trust the client's `deliveryFar` flag)
+before charging. Flagged for the payments go-live step.
 
 ---
 

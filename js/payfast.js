@@ -25,7 +25,7 @@ window.KaziPayfast = (function () {
   var CONFIG = {
     // Flip to false once the site is deployed to Netlify with the
     // function + environment variables in place. See DEPLOY.md.
-    demo: true,
+    demo: false,
 
     // Serverless endpoint that returns { action, fields } already
     // signed with the secret passphrase. Same-origin path on Netlify.

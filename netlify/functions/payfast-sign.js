@@ -71,7 +71,11 @@ exports.handler = async function (event) {
     if (p && q) { cents += p.price * q; count += q; }
   });
   if (count === 0) return json(400, { error: 'Cart is empty' });
-  if (data.deliveryFar) cents += DELIVERY_FAR_CENTS; // free within 10km
+  // Delivery: R120 unless the suburb is in the free-delivery zone. Currently
+  // trusts the client's deliveryFar flag. Go-live hardening: re-check the
+  // submitted suburb against the same FREE_SUBURBS list server-side here so the
+  // flag can't be forged. (See DEPLOY.md §D.)
+  if (data.deliveryFar) cents += DELIVERY_FAR_CENTS;
   var amount = (cents / 100).toFixed(2);
 
   // Where Payfast redirects the customer back to.

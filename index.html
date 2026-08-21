@@ -221,18 +221,18 @@
       <div class="grid grid-3">
         <div class="feature">
           <span class="step-num">1</span>
-          <h4 class="feature-title">Tell us what you need</h4>
-          <p class="feature-text">Pick a service and your preferred date below.</p>
+          <h4 class="feature-title">Request a quote</h4>
+          <p class="feature-text">Fill in the form below — your service, contact details, address and anything else we should know.</p>
         </div>
         <div class="feature">
           <span class="step-num">2</span>
-          <h4 class="feature-title">We confirm &amp; quote</h4>
-          <p class="feature-text">A quick call to confirm scope, timing and price.</p>
+          <h4 class="feature-title">We get in touch</h4>
+          <p class="feature-text">We reach out to confirm the scope, timing and price. No obligation.</p>
         </div>
         <div class="feature">
           <span class="step-num">3</span>
           <h4 class="feature-title">We clean, you relax</h4>
-          <p class="feature-text">Our vetted team arrives and gets it spotless.</p>
+          <p class="feature-text">On the agreed day, our team arrives and gets your space spotless.</p>
         </div>
       </div>
     </section>
@@ -247,9 +247,9 @@
         <form class="form-grid" id="bookingForm" name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field">
           <input type="hidden" name="form-name" value="booking">
           <p class="hp-field"><label>Leave this field empty <input name="bot-field"></label></p>
-          <label class="field field-dark">Full name<input name="name" placeholder="Your name" autocomplete="name" required></label>
+          <label class="field field-dark">Full name<input name="name" autocomplete="name" required></label>
           <label class="field field-dark">Contact number<input name="phone" inputmode="tel" autocomplete="tel" pattern="0[0-9]{9}|\+27[0-9]{9}" title="Enter a 10-digit number (e.g. 0821234567), or +27 followed by 9 digits" required></label>
-          <label class="field field-dark">Email<input type="email" name="email" placeholder="you@email.co.za" autocomplete="email" required></label>
+          <label class="field field-dark">Email<input type="email" name="email" autocomplete="email" required></label>
           <label class="field field-dark">Service
             <select name="service" required>
               <option value="" disabled selected>Please Select Service</option>
@@ -259,13 +259,14 @@
               <option>Move in / move out</option>
             </select>
           </label>
-          <label class="field field-dark field-full">Street address<input name="street" placeholder="e.g. 12 Main Road" autocomplete="address-line1" required></label>
-          <label class="field field-dark">Suburb / area<input name="suburb" placeholder="e.g. Rosebank" autocomplete="address-line2" required></label>
-          <label class="field field-dark">City / town<input name="city" placeholder="e.g. Johannesburg" autocomplete="address-level2" required></label>
-          <label class="field field-dark">Postal code<input name="postal" placeholder="e.g. 2196" autocomplete="postal-code" inputmode="numeric" required></label>
+          <label class="field field-dark field-full">Street address<input name="street" autocomplete="address-line1" required></label>
+          <label class="field field-dark">Suburb / area<input name="suburb" autocomplete="address-line2" required></label>
+          <label class="field field-dark">City / town<input name="city" autocomplete="address-level2" required></label>
+          <label class="field field-dark">Postal code<input name="postal" autocomplete="postal-code" inputmode="numeric" required></label>
+          <label class="field field-dark field-full">Additional message <span class="field-hint">(optional)</span><textarea name="message" rows="3"></textarea></label>
           <button class="btn btn-mint field-full" type="submit">Send my request</button>
-          <p class="form-note" id="bookingNote" hidden>✓ Thanks! Your request is on its way by email — and we've opened WhatsApp so you can send it to us there too. We'll be in touch shortly.</p>
-          <p class="form-note form-note-err" id="bookingErr" hidden>Sorry — we couldn't send that just now. Please try again, or call us on 063&nbsp;490&nbsp;2590.</p>
+          <p class="form-note" id="bookingNote" hidden>✓ Thanks! Your request is on its way — we'll be in touch shortly.</p>
+          <p class="form-note form-note-err" id="bookingErr" hidden>Sorry — we couldn't send that just now. Please try again, or reach us on WhatsApp using the button in the corner (or call 063&nbsp;490&nbsp;2590).</p>
         </form>
       </div>
     </section>
@@ -325,8 +326,7 @@
       <h1 class="page-title">Review &amp; pay</h1>
       <div class="pay-msg pay-msg-warn" id="payCancelled" hidden>Payment was cancelled — your cart is still saved. You can try again whenever you're ready.</div>
       <div class="pay-msg pay-msg-info" id="payDemo" hidden>Demo mode — this simulated a Payfast payment. No real money was charged. Card payments go live once the Payfast account &amp; secure signing are connected.</div>
-      <div class="pay-msg pay-msg-warn" id="payError" hidden>Sorry — we couldn't start the payment just now. Please try again, or choose EFT / bank transfer.</div>
-      <div class="pay-msg pay-msg-info" id="payEftMsg" hidden>We've opened WhatsApp so you can send us your order and arrange your EFT payment. If it didn't open, tap the WhatsApp button in the corner. We'll confirm and ship once payment reflects. 💚</div>
+      <div class="pay-msg pay-msg-warn" id="payError" hidden>Sorry — we couldn't start the payment just now. Please try again, or tap the WhatsApp button in the corner and we'll help you check out.</div>
 
       <div class="checkout-layout">
         <!-- Left: details + payment -->
@@ -334,21 +334,14 @@
           <div class="panel-light">
             <h3 class="panel-light-title">Your details</h3>
             <div class="form-grid">
-              <label class="field">Full name<input name="c-name" placeholder="e.g. Thando Smith" autocomplete="name"></label>
+              <label class="field">Full name<input name="c-name" autocomplete="name"></label>
               <label class="field">Contact number<input name="c-phone" inputmode="tel" autocomplete="tel" pattern="0[0-9]{9}|\+27[0-9]{9}" title="Enter a 10-digit number (e.g. 0821234567), or +27 followed by 9 digits"></label>
-              <label class="field">Email<input type="email" name="c-email" placeholder="you@email.co.za" autocomplete="email"></label>
-              <label class="field">Delivery address<input name="c-street" placeholder="e.g. 12 Main Road" autocomplete="address-line1"></label>
-              <label class="field">Suburb / area<input name="c-suburb" placeholder="e.g. Rosebank" autocomplete="address-line2"></label>
-              <label class="field">City / town<input name="c-city" placeholder="e.g. Johannesburg" autocomplete="address-level2"></label>
-              <label class="field">Postal code<input name="c-postal" placeholder="e.g. 2196" autocomplete="postal-code" inputmode="numeric"></label>
+              <label class="field">Email<input type="email" name="c-email" autocomplete="email"></label>
+              <label class="field">Delivery address<input name="c-street" autocomplete="address-line1"></label>
+              <label class="field">Suburb / area<input name="c-suburb" autocomplete="address-line2"></label>
+              <label class="field">City / town<input name="c-city" autocomplete="address-level2"></label>
+              <label class="field">Postal code<input name="c-postal" autocomplete="postal-code" inputmode="numeric"></label>
             </div>
-          </div>
-
-          <div class="panel-light">
-            <h3 class="panel-light-title">Delivery</h3>
-            <p class="delivery-note">Delivered by courier — <strong>free within 10&nbsp;km</strong>, R120 beyond. We work out your fee automatically from the delivery address above.</p>
-            <button type="button" class="btn btn-outline-green" id="calcDelivery">Calculate my delivery fee</button>
-            <p class="delivery-result" id="deliveryResult" hidden></p>
           </div>
 
           <div class="panel-light">
@@ -356,10 +349,6 @@
             <label class="pay-option">
               <input type="radio" name="pay" value="card" id="payCard" checked>
               <span><span class="pay-name">Card / Instant EFT — via Payfast</span><span class="pay-sub">You'll be redirected to Payfast to pay securely, then brought back here.</span></span>
-            </label>
-            <label class="pay-option">
-              <input type="radio" name="pay" value="eft" id="payEft">
-              <span><span class="pay-name">EFT / bank transfer</span><span class="pay-sub">Place your order and we'll open WhatsApp to arrange payment. We ship once it reflects.</span></span>
             </label>
           </div>
         </div>

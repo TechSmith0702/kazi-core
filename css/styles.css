@@ -288,15 +288,16 @@ a { text-decoration: none; color: inherit; }
 /* ---------- Forms ---------- */
 .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
 .field { display: flex; flex-direction: column; gap: 7px; font-weight: 700; font-size: 13px; color: var(--muted); }
-.field input, .field select {
+.field input, .field select, .field textarea {
   border: 1.5px solid #d6ddce; background: #fbfaf4; border-radius: 12px;
   padding: 12px 14px; font-size: 15px; color: var(--ink);
 }
-.field input:focus, .field select:focus { outline: 2px solid var(--green); outline-offset: 1px; }
+.field textarea { resize: vertical; min-height: 84px; line-height: 1.45; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--green); outline-offset: 1px; }
 .field-full { grid-column: 1 / -1; }
 .field-dark { color: #c3d0c4; }
-.field-dark input, .field-dark select { border: 1.5px solid #4a5f52; background: #33473b; color: #fbfaf5; }
-.field-dark input::placeholder { color: #8fa593; }
+.field-dark input, .field-dark select, .field-dark textarea { border: 1.5px solid #4a5f52; background: #33473b; color: #fbfaf5; }
+.field-dark input::placeholder, .field-dark textarea::placeholder { color: #8fa593; }
 /* Native date picker: render its calendar icon light-on-dark */
 .field-dark input[type="date"] { color-scheme: dark; }
 .field-hint { font-weight: 400; font-size: 12px; color: #8fa593; margin-top: 2px; }
@@ -356,11 +357,6 @@ a { text-decoration: none; color: inherit; }
 .pay-option:last-child { margin-bottom: 0; }
 .pay-option input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--green); cursor: pointer; }
 .pay-option span { display: flex; flex-direction: column; gap: 3px; }
-.delivery-note { font-size: 13px; color: var(--muted-2); margin: 0 0 14px; }
-.delivery-result { margin: 12px 0 0; font-weight: 700; font-size: 14px; }
-.delivery-ok { color: var(--green-ink); }
-.delivery-warn { color: var(--terra); }
-.delivery-info { color: var(--muted-2); }
 .pay-name { font-weight: 800; color: var(--ink); }
 .pay-sub { font-size: 13px; color: var(--muted-3); }
 

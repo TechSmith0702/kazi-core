@@ -75,7 +75,7 @@
     page = target;
     // Clear transient checkout banners so "Order confirmed" only shows right
     // after Place order (and disappears on Back to home / Keep shopping).
-    ['#confirmBlock', '#payDemo', '#payCancelled', '#payError', '#payEftMsg'].forEach((sel) => {
+    ['#confirmBlock', '#payDemo', '#payCancelled', '#payError'].forEach((sel) => {
       const el = $(sel); if (el) el.hidden = true;
     });
     PAGES.forEach((p) => {
@@ -267,83 +267,41 @@
       lines.appendChild(row);
     });
 
+    // Delivery follows the customer's suburb (free-zone list) — recomputed on
+    // every render so the summary updates live as they type their address.
+    const subVal = ((document.querySelector('[name="c-suburb"]') || {}).value || '').trim();
+    deliveryDone = !!subVal;
+    deliveryFar = subVal ? !inFreeZone(subVal) : false;
+
     const sub = subtotal();
     const delivery = deliveryCents();
     $('#sumSubtotal').textContent = money(sub);
-    $('#sumDelivery').textContent = delivery ? money(delivery) : 'Free';
+    $('#sumDelivery').textContent = deliveryDone ? (delivery ? money(delivery) : 'Free') : 'Enter suburb';
     $('#sumTotal').textContent = money(sub + delivery);
   }
 
-  function setDeliveryResult(msg, kind) {
-    const el = $('#deliveryResult');
-    if (!el) return;
-    el.textContent = msg;
-    el.className = 'delivery-result delivery-' + (kind || 'info');
-    el.hidden = false;
-  }
-
-  // ---------- Delivery distance ----------
-  const isLocalHost = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
-  // Eastleigh — LOCAL TESTING ONLY. In production the hidden server function
-  // (delivery-quote, origin from env vars) is authoritative and this is unused.
-  const TEST_ORIGIN = { lat: -26.1328, lng: 28.1602 };
-
-  function haversineKm(la1, lo1, la2, lo2) {
-    const R = 6371, toRad = (d) => (d * Math.PI) / 180;
-    const dLa = toRad(la2 - la1), dLo = toRad(lo2 - lo1);
-    const a = Math.sin(dLa / 2) ** 2 + Math.cos(toRad(la1)) * Math.cos(toRad(la2)) * Math.sin(dLo / 2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  }
-
-  // Progressively broader address queries — use the most specific that a
-  // free geocoder can actually resolve (house numbers/suburbs are patchy).
-  function addressQueries(a) {
-    const CO = 'South Africa';
-    const j = (...p) => p.filter(Boolean).join(', ');
-    // House numbers / many suburbs are missing from free map data, so we
-    // resolve at suburb/city/postal level (plenty precise for a 10km check)
-    // and skip the street line — it usually fails and just adds delay.
-    const list = [
-      j(a.suburb, a.city, a.postal, CO),
-      j(a.city, a.postal, CO),
-      j(a.suburb, a.city, CO),
-      j(a.postal, CO),
-      j(a.city, CO)
-    ].filter((s) => s && s !== CO);
-    return list.filter((s, i) => list.indexOf(s) === i);
-  }
-
-  function nominatimGeocode(q) {
-    return fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=za&q=' + encodeURIComponent(q))
-      .then((r) => r.json())
-      .then((list) => (Array.isArray(list) && list.length ? { lat: parseFloat(list[0].lat), lng: parseFloat(list[0].lon) } : null))
-      .catch(() => null);
-  }
-
-  // Local/testing geocode via OpenStreetMap Nominatim (free, no key), trying
-  // progressively broader queries until one resolves.
-  async function localGeocodeQuote(addr) {
-    for (const q of addressQueries(addr)) {
-      const loc = await nominatimGeocode(q);
-      if (loc) {
-        const km = haversineKm(TEST_ORIGIN.lat, TEST_ORIGIN.lng, loc.lat, loc.lng);
-        const within = km <= 10;
-        return { configured: true, resolved: true, km: Math.round(km * 10) / 10, within: within, fee: within ? 0 : DELIVERY_FAR_CENTS };
-      }
-    }
-    return { configured: true, resolved: false };
-  }
-
-  // Prefer the deployed server function (hidden origin); on localhost fall
-  // back to client-side geocoding so it's testable without deploying.
-  function quoteDelivery(addr) {
-    return fetch('/.netlify/functions/delivery-quote', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(addr)
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('fn ' + r.status))))
-      .then((d) => ((d && d.configured === false && isLocalHost) ? localGeocodeQuote(addr) : d))
-      .catch(() => { if (isLocalHost) return localGeocodeQuote(addr); throw new Error('unavailable'); });
-  }
+  // ---------- Delivery zone ----------
+  // Free courier delivery within ~10km of our base; R120 beyond. Rather than
+  // geocode every address live (free SA map data is patchy and mis-locates
+  // some suburbs), we match the customer's suburb against a curated free-zone
+  // measured once from our base. Anything not on the list is charged R120.
+  // Names match loosely (case / spacing / punctuation ignored). Henny approves
+  // this list — see the "Free-delivery zone" sheet. Borderline areas
+  // (Germiston, Sandton, Birchleigh, Lambton, Morningside, Observatory) are
+  // left OFF (R120) until she opts them in.
+  const FREE_SUBURBS = [
+    'Alexandra', 'Bedfordview', 'Bonaero Park', 'Bramley', 'Bramley Park',
+    'Bruma', 'Cyrildene', 'Dowerglen', 'Eastleigh', 'Edenvale', 'Edleen',
+    'Elandsfontein', 'Founders Hill', 'Founders View', 'Gardenview',
+    'Greenstone', 'Greenstone Hill', 'Harmelia', 'Hurleyvale', 'Illiondale',
+    'Isando', 'Kelvin', 'Kempton Park', 'Kensington', 'Linbro Park',
+    'Lombardy East', 'Lyndhurst', 'Malvern', 'Marlboro', 'Meadowdale',
+    'Modderfontein', 'Primrose', 'Rhodesfield', 'Sebenza', 'Spartan',
+    'Sydenham', 'Van Riebeeck Park', 'Wynberg'
+  ];
+  const normZone = (s) => (s || '').toLowerCase().replace(/[^a-z]/g, '');
+  const FREE_ZONE = new Set(FREE_SUBURBS.map(normZone));
+  const inFreeZone = (suburb) => FREE_ZONE.has(normZone(suburb));
 
   // Split a full name into first / last for Payfast
   function splitName(full) {
@@ -361,51 +319,10 @@
   }
 
   // Build a pre-filled WhatsApp message summarising the order (for EFT).
-  function whatsappOrderText() {
-    const lines = ["Hi Kazi Core! I'd like to place an order and pay by EFT:", ''];
-    Object.keys(cart).forEach((id) => {
-      const p = byId(id);
-      if (p) lines.push('• ' + cart[id] + '× ' + p.name + ' — ' + money(p.price * cart[id]));
-    });
-    const sub = subtotal();
-    const delivery = deliveryCents();
-    lines.push('');
-    lines.push('Subtotal: ' + money(sub));
-    lines.push('Delivery: ' + (delivery ? money(delivery) : (deliveryDone ? 'Free' : 'to be confirmed')));
-    lines.push('Total: ' + money(sub + delivery));
-    const val = (n) => ((document.querySelector('[name="' + n + '"]') || {}).value || '').trim();
-    const name = val('c-name');
-    if (name) { lines.push(''); lines.push('Name: ' + name); }
-    const addr = ['c-street', 'c-suburb', 'c-city', 'c-postal'].map(val).filter(Boolean).join(', ');
-    if (addr) lines.push('Address: ' + addr);
-    return lines.join('\n');
-  }
-
-  // Build a pre-filled WhatsApp message from the quote-request form.
-  function whatsappQuoteText(form) {
-    const v = (n) => ((form.querySelector('[name="' + n + '"]') || {}).value || '').trim();
-    const lines = ["Hi Kazi Core! I'd like a cleaning quote:", ''];
-    if (v('service')) lines.push('Service: ' + v('service'));
-    if (v('name')) lines.push('Name: ' + v('name'));
-    if (v('phone')) lines.push('Phone: ' + v('phone'));
-    if (v('email')) lines.push('Email: ' + v('email'));
-    const addr = ['street', 'suburb', 'city', 'postal'].map(v).filter(Boolean).join(', ');
-    if (addr) lines.push('Address: ' + addr);
-    return lines.join('\n');
-  }
-
   function placeOrder() {
     if (cartCount() === 0) return;
 
     var method = (document.querySelector('input[name="pay"]:checked') || {}).value;
-
-    if (method === 'eft') {
-      // Open WhatsApp with the order pre-filled so they can arrange EFT.
-      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(whatsappOrderText()), '_blank');
-      $('#payEftMsg').hidden = false;
-      $('#payEftMsg').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
 
     if (method === 'card' && window.KaziPayfast) {
       // Hand off to Payfast. On return, the ?payment= handler in init()
@@ -505,35 +422,10 @@
       });
     }
 
-    // Delivery fee — computed from the customer's address (free within 10km
-    // of us, R120 beyond) via the delivery-quote serverless function.
-    const calcBtn = $('#calcDelivery');
-    if (calcBtn) {
-      calcBtn.addEventListener('click', () => {
-        const v = (n) => ((document.querySelector('[name="' + n + '"]') || {}).value || '').trim();
-        const addr = { street: v('c-street'), suburb: v('c-suburb'), city: v('c-city'), postal: v('c-postal') };
-        if (!addr.street || !addr.city) { setDeliveryResult('Please enter your delivery address above first.', 'warn'); return; }
-        setDeliveryResult('Checking distance…', 'info');
-        calcBtn.disabled = true;
-        quoteDelivery(addr)
-          .then((data) => {
-            if (!data || data.configured === false) throw new Error('not configured');
-            if (data.resolved === false) { setDeliveryResult('We couldn\'t locate that address — please double-check it.', 'warn'); return; }
-            deliveryFar = !data.within;
-            deliveryDone = true;
-            const kmTxt = (data.km != null) ? ' (~' + data.km + ' km away)' : '';
-            setDeliveryResult(
-              data.within ? '✓ You\'re within 10 km' + kmTxt + ' — delivery is free.'
-                          : 'You\'re beyond 10 km' + kmTxt + ' — R120 delivery fee applies.',
-              data.within ? 'ok' : 'warn');
-            renderCheckout();
-          })
-          .catch(() => {
-            setDeliveryResult('We couldn\'t work it out just now — Kazi Core will confirm your delivery fee from the address you gave.', 'info');
-          })
-          .finally(() => { calcBtn.disabled = false; });
-      });
-    }
+    // Delivery fee updates live in the order summary as the customer types
+    // their suburb — free if it's in our free-delivery zone, else R120.
+    const suburbEl = document.querySelector('[name="c-suburb"]');
+    if (suburbEl) suburbEl.addEventListener('input', () => { if (page === 'checkout') renderCheckout(); });
 
     // Checkout
     $('#placeOrder').addEventListener('click', placeOrder);
@@ -547,9 +439,6 @@
       const form = e.target;
       $('#bookingNote').hidden = true;
       $('#bookingErr').hidden = true;
-      // Also open WhatsApp with the request pre-filled (done first, inside the
-      // click gesture, so pop-up blockers allow it). Email still sends below.
-      window.open('https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(whatsappQuoteText(form)), '_blank');
       const body = new URLSearchParams(new FormData(form)).toString();
       fetch('/', {
         method: 'POST',
