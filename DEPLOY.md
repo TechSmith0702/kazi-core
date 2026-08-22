@@ -107,9 +107,21 @@ no extra code. To receive the bookings:
 4. Test it: open the live site, submit a booking, and check it appears under **Forms** and
    arrives by email.
 
+There is a **second Netlify form named `order`** (hidden in the HTML). After a customer
+completes a Payfast payment, the site submits the **full paid order** to it — items,
+delivery address, contact details and totals — so the business gets everything needed to
+ship. Set it up the same way:
+- On deploy, Netlify detects the `order` form (appears under **Forms** alongside `booking`).
+- Add an **email notification** on it (same steps as above). **For testing, point it at
+  your own email first** (e.g. `thandomasw@gmail.com`) so sandbox test orders land in your
+  inbox; switch it to `kazicoreholdings@gmail.com` for real go-live.
+- It only fires on a **successful payment**, so every entry is a real paid order.
+- (Payfast also emails the business its own payment notification; the `order` form is what
+  carries the delivery address, which Payfast doesn't.)
+
 Notes:
 - Free tier covers 100 submissions/month. Spam is filtered by a hidden honeypot field.
-- Bookings do **not** work on `localhost` — only on the deployed Netlify site.
+- Bookings/orders do **not** work on `localhost` — only on the deployed Netlify site.
 
 ---
 

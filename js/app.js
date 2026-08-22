@@ -318,16 +318,53 @@
     $('#confirmBlock').scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
-  // Build a pre-filled WhatsApp message summarising the order (for EFT).
+  // Save the full order (items + delivery address) to sessionStorage before
+  // the Payfast redirect, so we can record it and show its reference when the
+  // customer returns. sessionStorage survives the round-trip to Payfast.
+  function stashPendingOrder(ref) {
+    var val = function (n) { return ((document.querySelector('[name="' + n + '"]') || {}).value || '').trim(); };
+    var items = Object.keys(cart).map(function (id) {
+      var p = byId(id);
+      return p ? (cart[id] + '× ' + p.name + ' (' + money(p.price * cart[id]) + ')') : '';
+    }).filter(Boolean).join(', ');
+    var order = {
+      ref: ref,
+      name: val('c-name'),
+      email: val('c-email'),
+      phone: val('c-phone'),
+      address: ['c-street', 'c-suburb', 'c-city', 'c-postal'].map(val).filter(Boolean).join(', '),
+      items: items,
+      subtotal: money(subtotal()),
+      delivery: deliveryCents() ? money(deliveryCents()) : 'Free',
+      total: money(subtotal() + deliveryCents())
+    };
+    try { sessionStorage.setItem('kc-pending-order', JSON.stringify(order)); } catch (e) { /* ignore */ }
+  }
+
+  // Record a paid order via the hidden Netlify "order" form (emails the
+  // business the full order incl. delivery address). Fires only on success.
+  function submitOrderRecord(order) {
+    var body = new URLSearchParams({
+      'form-name': 'order',
+      ref: order.ref, name: order.name, email: order.email, phone: order.phone,
+      address: order.address, items: order.items,
+      subtotal: order.subtotal, delivery: order.delivery, total: order.total
+    }).toString();
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body })
+      .catch(function (e) { console.error('[order] record failed', e); });
+  }
+
   function placeOrder() {
     if (cartCount() === 0) return;
 
     var method = (document.querySelector('input[name="pay"]:checked') || {}).value;
 
     if (method === 'card' && window.KaziPayfast) {
-      // Hand off to Payfast. On return, the ?payment= handler in init()
-      // shows the confirmation (success) or the cancelled note.
+      // Stash the order, then hand off to Payfast. On return, the ?payment=
+      // handler shows the confirmation and records the paid order.
       var nm = splitName((document.querySelector('[name="c-name"]') || {}).value);
+      var ref = 'KC-' + Date.now();
+      stashPendingOrder(ref);
       $('#payError').hidden = true;
       var result = window.KaziPayfast.checkout({
         cart: cart,
@@ -336,7 +373,7 @@
         lastName: nm.last,
         email: (document.querySelector('[name="c-email"]') || {}).value || '',
         cell: (document.querySelector('[name="c-phone"]') || {}).value || '',
-        paymentId: 'KC-' + Date.now()
+        paymentId: ref
       }, {
         onError: function () { $('#payError').hidden = false; }
       });
@@ -349,7 +386,7 @@
       return; // for real payments the browser navigates to Payfast
     }
 
-    // Cash on delivery (or Payfast not loaded) — confirm locally.
+    // Payfast not loaded — confirm locally (fallback).
     showConfirmation();
   }
 
@@ -364,9 +401,18 @@
 
     if (status === 'success') {
       go('checkout');
+      // Recover the stashed order: show its real reference and record it.
+      var order = null;
+      try { order = JSON.parse(sessionStorage.getItem('kc-pending-order') || 'null'); } catch (e) { order = null; }
+      if (order) {
+        if (order.ref) $('#orderNumber').textContent = order.ref;
+        submitOrderRecord(order);
+        sessionStorage.removeItem('kc-pending-order');
+      }
       showConfirmation();
     } else if (status === 'cancelled') {
       go('checkout');
+      sessionStorage.removeItem('kc-pending-order');
       $('#payCancelled').hidden = false;
     }
   }

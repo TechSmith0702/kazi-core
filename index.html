@@ -375,7 +375,7 @@
         <span class="confirm-check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
         <div class="confirm-body">
           <h2 class="confirm-title">Order confirmed 🎉</h2>
-          <p class="confirm-text">Thanks! Your order <strong class="txt-green" id="orderNumber">KC-2026-0142</strong> is in. A confirmation has been sent to your email and our team will be in touch shortly.</p>
+          <p class="confirm-text">Thanks! Your order <strong class="txt-green" id="orderNumber">KC-2026-0142</strong> is confirmed and paid. Our team will be in touch shortly to arrange your delivery.</p>
           <div class="btn-row">
             <button class="btn btn-green" data-nav="home" type="button">Back to home</button>
             <button class="btn btn-outline-green" data-nav="shop" type="button">Keep shopping</button>
@@ -383,6 +383,17 @@
         </div>
       </div>
     </div>
+
+    <!-- Hidden form so Netlify captures PAID orders. JS submits it after a
+         successful Payfast payment; Netlify emails the order (incl. delivery
+         address) to the business. Enable email notification in Netlify → Forms. -->
+    <form name="order" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="order">
+      <p hidden><label>Do not fill this in <input name="bot-field"></label></p>
+      <input name="ref"><input name="name"><input name="email"><input name="phone">
+      <input name="address"><input name="items">
+      <input name="subtotal"><input name="delivery"><input name="total">
+    </form>
   </main>
 
   <!-- ============ FOOTER ============ -->
